@@ -28,7 +28,7 @@ struct PhotoView: View {
                 let published = item?.published ?? ""
                 let taken = item?.dateTakenString ?? ""
                 let author = item?.author ?? ""
-
+                
                 VStack {
                     Text(title)
                         .font(.title)
@@ -40,15 +40,11 @@ struct PhotoView: View {
                         Text(author)
                             .font(.title2)
                     }
-
+                    
                     Spacer()
-
-                    HStack {
-                        Text("Published ")
-                            .font(.body)
-                        Text(published)
-                            .font(.caption)
-                    }
+                    
+                    Text("Published " + published)
+                        .font(.caption)
                     HStack {
                         Text("Date taken ")
                             .font(.body)
