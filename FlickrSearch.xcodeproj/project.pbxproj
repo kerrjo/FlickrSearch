@@ -109,15 +109,11 @@
 			isa = PBXGroup;
 			children = (
 				5561605127B6ABA500CF3F34 /* FlickrSearchApp.swift */,
-				5561605327B6ABA500CF3F34 /* ContentView.swift */,
 				5561605527B6ABA800CF3F34 /* Assets.xcassets */,
 				5561605727B6ABA800CF3F34 /* Preview Content */,
-				5561607B27B6AE3E00CF3F34 /* Flickr.swift */,
-				5561607D27B6AE6400CF3F34 /* FlickrService.swift */,
-				5561607F27B6B05500CF3F34 /* FlickrServiceHandler.swift */,
-				5561608127B6C3E300CF3F34 /* PhotoView.swift */,
-				5561608327B6D63B00CF3F34 /* PhotosModel.swift */,
-				5561608527B6DDE200CF3F34 /* PhotoDates.swift */,
+				556A943327B70D190093AD7C /* Views */,
+				556A943427B70D370093AD7C /* Models */,
+				556A943527B70D460093AD7C /* Service */,
 			);
 			path = FlickrSearch;
 			sourceTree = "<group>";
@@ -146,6 +142,34 @@
 				5561606E27B6ABA800CF3F34 /* FlickrSearchUITestsLaunchTests.swift */,
 			);
 			path = FlickrSearchUITests;
+			sourceTree = "<group>";
+		};
+		556A943327B70D190093AD7C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5561605327B6ABA500CF3F34 /* ContentView.swift */,
+				5561608127B6C3E300CF3F34 /* PhotoView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		556A943427B70D370093AD7C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5561607B27B6AE3E00CF3F34 /* Flickr.swift */,
+				5561608327B6D63B00CF3F34 /* PhotosModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		556A943527B70D460093AD7C /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				5561608527B6DDE200CF3F34 /* PhotoDates.swift */,
+				5561607D27B6AE6400CF3F34 /* FlickrService.swift */,
+				5561607F27B6B05500CF3F34 /* FlickrServiceHandler.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

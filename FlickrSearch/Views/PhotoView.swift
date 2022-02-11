@@ -29,28 +29,26 @@ struct PhotoView: View {
                 let taken = item?.dateTakenString ?? ""
                 let author = item?.author ?? ""
                 
+                Text(title)
+                    .font(.title)
+                
+                Divider()
                 VStack {
-                    Text(title)
-                        .font(.title)
-                    
-                    Divider()
-                    VStack {
-                        Text("By")
-                            .font(.body)
-                        Text(author)
-                            .font(.title2)
-                    }
-                    
-                    Spacer()
-                    
-                    Text("Published " + published)
+                    Text("By")
+                        .font(.body)
+                    Text(author)
+                        .font(.title2)
+                }
+                
+                Spacer()
+                
+                Text("Published " + published)
+                    .font(.caption)
+                HStack {
+                    Text("Date taken ")
+                        .font(.body)
+                    Text(taken)
                         .font(.caption)
-                    HStack {
-                        Text("Date taken ")
-                            .font(.body)
-                        Text(taken)
-                            .font(.caption)
-                    }
                 }
             }
         }
