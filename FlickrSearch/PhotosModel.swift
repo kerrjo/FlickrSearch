@@ -25,7 +25,6 @@ struct PhotoItem: Identifiable {
 
 class PhotosModel: ObservableObject {
     @Published var photos: [PhotoItem] = []
-    @Published var selected: PhotoItem?
     private var service: FlickrWebService
     private let dateFormatter: PhotoDateFormatting?
     
@@ -54,17 +53,10 @@ class PhotosModel: ObservableObject {
             }
         }
     }
-    //                Task {
-    //                    await MainActor.run { [unowned items] in
-    //                        self?.photos = items
-    //                    }
-    //                }
-
     
     init(_ service: FlickrWebService? = nil, dateFormatter: PhotoDateFormatting? = nil) {
         self.service = service ?? FlickrServiceHandler()
         self.dateFormatter = dateFormatter ?? PhotoDates()
     }
-    
 }
 

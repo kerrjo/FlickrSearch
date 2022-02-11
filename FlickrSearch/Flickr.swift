@@ -12,7 +12,6 @@ import Foundation
 
 // let modified: String   let modified: Date
 
-
 // MARK: - Flickr
 struct Flickr: Codable {
     let title: String

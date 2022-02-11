@@ -24,7 +24,6 @@ class FlickrServiceHandler: FlickrWebService {
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else { return completion(.failure(.malformedURL)) }
         print(url)
-
         fetch(url, completion: completion)
     }
     
@@ -51,11 +50,6 @@ class FlickrServiceHandler: FlickrWebService {
                 print(error)
                 return completion(.failure(.parse))
             }
-            
-            
-//            guard let results = try? JSONDecoder().decode(Flickr.self, from: jsonData) else {
-//                      return completion(.failure(.parse))
-//                  }
             
         }
         dataTask?.resume()

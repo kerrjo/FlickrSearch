@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum FetchError: Error {
     case error(Error)
     case malformedURL
@@ -46,7 +45,6 @@ extension FlickrWebService {
  static  ?format=json
  static  &nojsoncallback=1
  dynamic &tags=porcupine
-
  
  */
 
