@@ -7,68 +7,6 @@
 
 import SwiftUI
 
-struct PhotoItem: Identifiable {
-    var id: UUID = UUID()
-    var imageURL: URL
-    var title: String = "photo"
-    init(_ url: URL, title: String = "") {
-        imageURL = url
-        self.title = title
-    }
-}
-
-
-class PhotosModel: ObservableObject {
-    @Published var photos: [PhotoItem] = []
-    @Published var selected: PhotoItem?
-    private var service: FlickrWebService
-    
-    func fetch(using term: String) {
-        service.fetchPhotos(searchTerm: term) { [weak self] in
-            switch $0 {
-            case .success(let resp):
-                print(resp.title, "\(resp.items.count)")
-                
-                var items: [PhotoItem] = []
-                resp.items.forEach {
-                    if let url = URL(string: $0.media.m) {
-                        items.append(PhotoItem(url, title: $0.title))
-                    }
-                }
-                DispatchQueue.main.async { [weak self] in
-                    self?.photos = items
-                }
-//                Task {
-//                    await MainActor.run { [unowned items] in
-//                        self?.photos = items
-//                    }
-//                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    init(_ service: FlickrWebService? = nil) {
-        self.service = service ?? FlickrServiceHandler()
-    }
-    
-}
-
-
-//@State private var isShowingDetailView = false
-//
-//  var body: some View {
-//      NavigationView {
-//          VStack {
-//              NavigationLink(destination: Text("Second View"), isActive: $isShowingDetailView) { EmptyView() }
-//
-//              Button("Tap to show detail") {
-//                  isShowingDetailView = true
-//              }
-//          }
-//          .navigationTitle("Navigation")
-//      }
 
 
 struct ContentView: View {
@@ -81,11 +19,6 @@ struct ContentView: View {
         //            Color.indigo.opacity(0.5)
         
         NavigationView {
-            //NavigationLink(destination: PhotoView(), isActive: $isShowingDetailView) { EmptyView() }
-            
-            //            NavigationLink("photo", isActive: <#T##Binding<Bool>#>, destination: <#T##() -> _#>"Photo") {
-            //                EmptyView
-            //            }
             VStack {
                 TextField("Search", text: $searchTerm.onChange(searchTermChanged))
                     .textFieldStyle(.roundedBorder)
@@ -94,7 +27,7 @@ struct ContentView: View {
                         ForEach(viewModel.photos, id: \.id) { item in
                             
                             NavigationLink {
-                                PhotoView(viewModel: viewModel, item: item)
+                                PhotoView(item: item)
                             } label: {
                                 AsyncImage(url: item.imageURL) { image in
                                     image
@@ -102,16 +35,14 @@ struct ContentView: View {
                                         .aspectRatio(contentMode: .fit)
                                 } placeholder: {
                                     Image(systemName: "photo")
-                                    //ProgressView()
                                 }
                             }
                         }
                     }
                 }
             }
+            .navigationTitle("Flickr Photos")
         }
-        .navigationTitle("Flickr Photos")
-        //        }
     }
     
     func searchTermChanged(to value: String) {
@@ -139,6 +70,25 @@ extension Binding {
         )
     }
 }
+
+
+
+
+//NavigationLink(destination: PhotoView(), isActive: $isShowingDetailView) { EmptyView() }
+
+//            NavigationLink("photo", isActive: <#T##Binding<Bool>#>, destination: <#T##() -> _#>"Photo") {
+//                EmptyView
+//            }
+
+
+//@State private var isShowingDetailView = false
+//  var body: some View {
+//      NavigationView {
+//          VStack {
+//              NavigationLink(destination: Text("Second View"), isActive: $isShowingDetailView) { EmptyView() }
+//          }
+//          .navigationTitle("Navigation")
+//      }
 
 
 

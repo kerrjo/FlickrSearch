@@ -8,32 +8,61 @@
 import SwiftUI
 
 struct PhotoView: View {
-    @ObservedObject var viewModel: PhotosModel
-
     var item: PhotoItem?
     var body: some View {
-        VStack {
-            if let imageURL = item?.imageURL {
-                AsyncImage(url: imageURL) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    Image(systemName: "photo")
-                    ProgressView()
+        ScrollView {
+            VStack {
+                if let imageURL = item?.imageURL {
+                    AsyncImage(url: imageURL) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    } placeholder: {
+                        Image(systemName: "photo")
+                        ProgressView()
+                    }
+                } else {
+                    Image(systemName: "photo.fill")
                 }
-            } else {
-                Image(systemName: "photo.fill")
+                let title = item?.title ?? "unknown"
+                let published = item?.published ?? ""
+                let taken = item?.dateTakenString ?? ""
+                let author = item?.author ?? ""
+
+                VStack {
+                    Text(title)
+                        .font(.title)
+                    
+                    Divider()
+                    VStack {
+                        Text("By")
+                            .font(.body)
+                        Text(author)
+                            .font(.title2)
+                    }
+
+                    Spacer()
+
+                    HStack {
+                        Text("Published ")
+                            .font(.body)
+                        Text(published)
+                            .font(.caption)
+                    }
+                    HStack {
+                        Text("Date taken ")
+                            .font(.body)
+                        Text(taken)
+                            .font(.caption)
+                    }
+                }
             }
-            //let title = viewModel.selected?.title ?? "unknown"
-            let title = item?.title ?? "unknown"
-            Text(title)
         }
     }
 }
 
 struct PhotoView_Previews: PreviewProvider {
     static var previews: some View {
-        PhotoView(viewModel: PhotosModel())
+        PhotoView()
     }
 }
