@@ -11,51 +11,62 @@ struct PhotoView: View {
     var item: PhotoItem?
     
     var body: some View {
-        ScrollView {
-            VStack {
-                if let imageURL = item?.imageURL {
-                    AsyncImage(url: imageURL) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-//                        Image(systemName: "photo")
-//                            .resizable()
-//                            .padding()
-                        ProgressView()
-                            .frame(width: 100, height: 100, alignment: .center)
-                    }
-                } else {
-                    Image(systemName: "photo.fill")
-                }
-                
-                let title = item?.title ?? "unknown"
-                let published = item?.published ?? ""
-                let taken = item?.dateTakenString ?? ""
-                let author = item?.author ?? ""
-                
-                Text(title)
-                    .font(.title)
-                
-                Divider()
-                
+        ZStack {
+            Color.black
+                .edgesIgnoringSafeArea([.bottom])
+            
+            ScrollView {
                 VStack {
-                    Text("By")
-                        .font(.body)
-                    Text(author)
-                        .font(.title2)
-                }
-                
-                Spacer()
-                
-                Text("Published " + published)
-                    .font(.caption)
-                HStack {
-                    Text("Date taken ")
-                        .font(.body)
-                    Text(taken)
-                        .font(.caption)
-                }
+                    Text("Taken on " + (item?.dateTakenString ?? ""))
+                        .colorInvert()
+                        .font(.footnote)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 16)
+                    
+                    if let imageURL = item?.imageURLlarge {
+                        AsyncImage(url: imageURL) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .accentColor(Color.gray)
+                                .scaleEffect(x: 2, y: 2, anchor: .center)
+                                .padding([.leading, .trailing], 10)
+                        }
+                    } else {
+                        Image(systemName: "photo.fill")
+                    }
+                    
+                    let title = item?.title ?? "unknown"
+                    let published = item?.published ?? ""
+                    let author = item?.author ?? ""
+                    
+                    Group {
+                        Text(title)
+                            .font(.title)
+                            .padding()
+                        
+                        Divider()
+                        VStack {
+                            Text("By")
+                                .font(.subheadline)
+                            Spacer()
+                            Text(author)
+                                .font(.subheadline)
+                        }
+                        
+                        Spacer()
+                        Text("Published " + published)
+                            .font(.caption)
+                            .padding()
+                        
+                    }
+                    .colorInvert()
+                } // Vstack
+                .navigationTitle("Photo")
             }
         }
     }
@@ -67,16 +78,10 @@ struct PhotoView_Previews: PreviewProvider {
         PhotoView(
             item: PhotoItem(with: Item(
                 title: "Picture This", link: "",
-                media: Media(m: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg"),
-                dateTaken: "", itemDescription: "", published: "",
+                media: Media(m: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_c.jpg"),
+                dateTaken: "Jan 18, 2000", itemDescription: "", published: "",
                 author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""))
         )
     }
 }
-
-//        var item = PhotoItem(
-//            URL(string: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg")!,
-//            title: "Picture This")
-//        item.dateTakenString = "Fri Nov 3, 1986"
-//        item.published = "2 days ago"
 

@@ -61,43 +61,52 @@ struct ContentView: View {
     @StateObject var viewModel = PhotosModel()
     @StateObject var textObserver = TextFieldObserver()
     @State private var searchTerm = ""
-
+    @State private var gridSplit = 4
+    @State private var gridSpacing = 10.0
+    
+    
+    // let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    
     var body: some View {
         NavigationView {
-            VStack {
-                TextFieldWithDebounce(debouncedText: $searchTerm.onChange(searchTermChanged))
-                ZStack {
-                    Color.indigo.opacity(0.5)
-                        .edgesIgnoringSafeArea([.bottom])
-                    
-                    ScrollView {
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                            ForEach(viewModel.photos, id: \.id) { item in
-                                
-                                NavigationLink {
-                                    PhotoView(item: item)
-                                } label: {
-                                    AsyncImage(url: item.imageURL) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                    } placeholder: {
-                                        ProgressView()
-                                        .frame(width: 100, height: 100, alignment: .center)
-
-//                                        Image(systemName: "photo")
-//                                            .resizable()
-//                                            .aspectRatio(contentMode: .fit)
-//                                            .frame(width: 80, height: 80, alignment: .center)
-                                    }
-                                }
-                                //.navigationBarHidden(true)
+            GeometryReader { geom in
+                VStack {
+                    TextFieldWithDebounce(debouncedText: $searchTerm.onChange(searchTermChanged))
+                    ZStack {
+                        Color.indigo.opacity(0.5)
+                            .edgesIgnoringSafeArea([.bottom])
+                        
+                        let gridSplitWidth = geom.size.width - gridSpacing * Double(gridSplit - 1)
+                        let gridItemWidth = gridSplitWidth / Double(gridSplit)
+                        ScrollView {
+                            let columns = (1...gridSplit).map { _ in
+                                GridItem(.fixed(gridItemWidth))
                             }
-                        }
+                            LazyVGrid(columns: columns, spacing: gridSpacing) {
+                                ForEach(viewModel.photos, id: \.id) { item in
+                                    
+                                    NavigationLink {
+                                        PhotoView(item: item)
+                                    } label: {
+                                        AsyncImage(url: item.imageURL) { image in
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                        } placeholder: {
+                                            ProgressView()
+                                                .progressViewStyle(.circular)
+                                                .accentColor(Color.white)
+                                                .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
+                                                .padding(gridItemWidth / 2.0)
+                                        }
+                                    }
+                                    //.navigationBarHidden(true)
+                                }
+                            }
+                        } // scroll view
                     }
-                    // scroll view
                 }
-            }
+            } // navigation view
             .navigationTitle("Flickr Photos")
         }
     }

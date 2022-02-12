@@ -7,10 +7,11 @@
 
 import Foundation
 
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-//   let flickr = try? newJSONDecoder().decode(Flickr.self, from: jsonData)
-
-// let modified: String   let modified: Date
+typealias FlickrResponse = Flickr
+typealias FlickrItem = Item
+typealias FlickrItems = [FlickrItem]
+typealias FlickrMedia = Media
+typealias Items = [Item]
 
 // MARK: - Flickr
 struct Flickr: Codable {
@@ -52,3 +53,8 @@ struct Item: Codable {
 struct Media: Codable {
     let m: String
 }
+
+// This file was partially generated from JSON Schema using quicktype, do not modify it directly.
+//   let flickr = try? newJSONDecoder().decode(Flickr.self, from: jsonData)
+// jk: Dates were changed to String
+// jk: let modified: String   let modified: Date

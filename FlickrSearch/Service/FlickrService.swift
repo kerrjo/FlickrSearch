@@ -21,6 +21,7 @@ protocol FlickrWebService {
     func cancel()
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ())
     func flickrServiceURL(searchTerm: String) -> URL?
+    var itemsPerPage: Int { get }
 }
 
 extension FlickrWebService {
@@ -29,10 +30,15 @@ extension FlickrWebService {
         components.queryItems = [
             URLQueryItem(name: "format", value: "json"),
             URLQueryItem(name: "nojsoncallback", value: "1"),
+            URLQueryItem(name: "per_page", value: "\(itemsPerPage)"),
+            URLQueryItem(name: "tagmode", value: "any"),
+
             URLQueryItem(name: "tags", value: searchTerm)
         ]
         return components.url
     }
+    
+    var itemsPerPage: Int { 40 }
 }
 
 
