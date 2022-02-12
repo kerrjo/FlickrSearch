@@ -8,43 +8,48 @@
 import Foundation
 
 
-struct PhotoItem: Identifiable {
+class PhotoItem: Identifiable {
     var id: UUID = UUID()
-    var imageURL: URL
+    var imageURL: URL?
     var title: String = "photo"
     var dateTakenString: String = ""
     var published: String = ""
     var author: String = ""
-
-    init(_ url: URL, title: String = "") {
-        imageURL = url
-        self.title = title
+    
+    init(with item: Item, dateTakenString: String = "", published: String = "") {
+        if let url = URL(string: item.media.m) {
+            imageURL = url
+        }
+        title = item.title
+        if let range = item.author.range(of: "@flickr.com ") {
+            author = String(item.author.suffix(from: range.upperBound))
+            author = author.replacingOccurrences(of: "(\"", with: "")
+            author = author.replacingOccurrences(of: "\")", with: "")
+        } else {
+            author = item.author
+        }
+        self.dateTakenString = dateTakenString
+        self.published = published
     }
 }
 
 
 class PhotosModel: ObservableObject {
     @Published var photos: [PhotoItem] = []
-    private var service: FlickrWebService
+    private let service: FlickrWebService?
     private let dateFormatter: PhotoDateFormatting?
     
     func fetch(using term: String) {
-        service.fetchPhotos(searchTerm: term) { [weak self] in
+        service?.fetchPhotos(searchTerm: term) { [weak self] in
             switch $0 {
             case .success(let resp):
                 print(resp.title, "\(resp.items.count)")
-                
-                var items: [PhotoItem] = []
-                resp.items.forEach {
-                    if let url = URL(string: $0.media.m) {
-                        var item = PhotoItem(url, title: $0.title)
-                        item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
-                        item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
-                        item.author = String($0.author.split(separator: " ").last ?? "")
-                        
-                        items.append(item)
-                    }
+                let items = resp.items.map {
+                    PhotoItem(with: $0,
+                              dateTakenString: self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? "",
+                              published: self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? "")
                 }
+                
                 DispatchQueue.main.async { [weak self] in
                     self?.photos = items
                 }
@@ -59,4 +64,3 @@ class PhotosModel: ObservableObject {
         self.dateFormatter = dateFormatter ?? PhotoDates()
     }
 }
-

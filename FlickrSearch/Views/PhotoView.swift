@@ -64,18 +64,19 @@ struct PhotoView: View {
 struct PhotoView_Previews: PreviewProvider {
     
     static var previews: some View {
-        PhotoView(item: PhotoItem(
-            URL(string: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg")!,
-            title: "Picture This")
+        PhotoView(
+            item: PhotoItem(with: Item(
+                title: "Picture This", link: "",
+                media: Media(m: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg"),
+                dateTaken: "", itemDescription: "", published: "",
+                author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""))
         )
     }
 }
 
-
 //        var item = PhotoItem(
 //            URL(string: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg")!,
 //            title: "Picture This")
-//
 //        item.dateTakenString = "Fri Nov 3, 1986"
 //        item.published = "2 days ago"
 

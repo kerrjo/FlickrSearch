@@ -73,6 +73,7 @@ struct ContentView: View {
                     ScrollView {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                             ForEach(viewModel.photos, id: \.id) { item in
+                                
                                 NavigationLink {
                                     PhotoView(item: item)
                                 } label: {
@@ -90,6 +91,7 @@ struct ContentView: View {
 //                                            .frame(width: 80, height: 80, alignment: .center)
                                     }
                                 }
+                                //.navigationBarHidden(true)
                             }
                         }
                     }

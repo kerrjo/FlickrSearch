@@ -9,7 +9,7 @@ import XCTest
 import Combine
 @testable import FlickrSearch
 
-class TestPhotosModel: XCTestCase {
+class PhotosModelTests: XCTestCase {
     
     private var cancellables: Set<AnyCancellable>!
     
