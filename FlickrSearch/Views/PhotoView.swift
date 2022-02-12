@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PhotoView: View {
     var item: PhotoItem?
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -18,12 +19,16 @@ struct PhotoView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                     } placeholder: {
-                        Image(systemName: "photo")
+//                        Image(systemName: "photo")
+//                            .resizable()
+//                            .padding()
                         ProgressView()
+                            .frame(width: 100, height: 100, alignment: .center)
                     }
                 } else {
                     Image(systemName: "photo.fill")
                 }
+                
                 let title = item?.title ?? "unknown"
                 let published = item?.published ?? ""
                 let taken = item?.dateTakenString ?? ""
@@ -33,6 +38,7 @@ struct PhotoView: View {
                     .font(.title)
                 
                 Divider()
+                
                 VStack {
                     Text("By")
                         .font(.body)
@@ -56,7 +62,20 @@ struct PhotoView: View {
 }
 
 struct PhotoView_Previews: PreviewProvider {
+    
     static var previews: some View {
-        PhotoView()
+        PhotoView(item: PhotoItem(
+            URL(string: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg")!,
+            title: "Picture This")
+        )
     }
 }
+
+
+//        var item = PhotoItem(
+//            URL(string: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_m.jpg")!,
+//            title: "Picture This")
+//
+//        item.dateTakenString = "Fri Nov 3, 1986"
+//        item.published = "2 days ago"
+

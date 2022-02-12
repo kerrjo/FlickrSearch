@@ -6,23 +6,73 @@
 //
 
 import SwiftUI
+import Combine
 
-struct ContentView: View {
-    @State private var searchTerm: String = ""
-    @StateObject var viewModel = PhotosModel()
+// https://stackoverflow.com/questions/66164898/swiftui-combine-debounce-textfield/66165075
+
+/*
+ an Observable that will update the secondary, debounced from the primary at intervals
+ */
+class TextFieldObserver : ObservableObject {
+    @Published var debouncedText = ""
+    @Published var searchText = ""
     
+    private var subscriptions = Set<AnyCancellable>()
+    
+    init() {
+        $searchText
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] in
+                self?.debouncedText = $0
+            } )
+            .store(in: &subscriptions)
+    }
+}
+
+/*
+ a View contains a TextField that uses an observable
+ The text that is changed in thetext field is subscribed to insid ethe observable
+ */
+struct TextFieldWithDebounce : View {
+    @Binding var debouncedText : String
+    @StateObject private var textObserver = TextFieldObserver()
+    
+    var body: some View {
+        VStack {
+            TextField("Search Tags", text: $textObserver.searchText)
+                .frame(height: 30)
+                .padding(.leading, 5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.blue, lineWidth: 1)
+                )
+                .padding(.horizontal, 20)
+        }.onReceive(textObserver.$debouncedText) {
+            debouncedText = $0
+        }
+    }
+}
+
+/*
+ a View conatins a TextFiels that uses an observable
+ The text that is changed in thetext field is subscribed to insid ethe observable
+ */
+struct ContentView: View {
+    @StateObject var viewModel = PhotosModel()
+    @StateObject var textObserver = TextFieldObserver()
+    @State private var searchTerm = ""
+
     var body: some View {
         NavigationView {
             VStack {
-                TextField("Search", text: $searchTerm.onChange(searchTermChanged))
-                    .textFieldStyle(.roundedBorder)
+                TextFieldWithDebounce(debouncedText: $searchTerm.onChange(searchTermChanged))
                 ZStack {
                     Color.indigo.opacity(0.5)
+                        .edgesIgnoringSafeArea([.bottom])
                     
                     ScrollView {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                             ForEach(viewModel.photos, id: \.id) { item in
-                                
                                 NavigationLink {
                                     PhotoView(item: item)
                                 } label: {
@@ -31,12 +81,19 @@ struct ContentView: View {
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                     } placeholder: {
-                                        Image(systemName: "photo")
+                                        ProgressView()
+                                        .frame(width: 100, height: 100, alignment: .center)
+
+//                                        Image(systemName: "photo")
+//                                            .resizable()
+//                                            .aspectRatio(contentMode: .fit)
+//                                            .frame(width: 80, height: 80, alignment: .center)
                                     }
                                 }
                             }
                         }
                     }
+                    // scroll view
                 }
             }
             .navigationTitle("Flickr Photos")
@@ -44,8 +101,9 @@ struct ContentView: View {
     }
     
     func searchTermChanged(to value: String) {
-        print("Name changed to \(searchTerm)!")
-        viewModel.fetch(using: searchTerm)
+        print(#function, value)
+        guard value.count > 1 else { return }
+        viewModel.fetch(using: value)
     }
 }
 
@@ -66,4 +124,3 @@ extension Binding {
         )
     }
 }
-

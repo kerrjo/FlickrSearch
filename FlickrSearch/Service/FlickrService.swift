@@ -38,13 +38,10 @@ extension FlickrWebService {
 
 /**
  https://api.flickr.com/services/feeds/photos_public.gne?format=json&nojsoncallback=1&tags=porcupine
-
  URL to service
  https://api.flickr.com/services/feeds/photos_public.gne
  query params
  static  ?format=json
  static  &nojsoncallback=1
  dynamic &tags=porcupine
- 
  */
-

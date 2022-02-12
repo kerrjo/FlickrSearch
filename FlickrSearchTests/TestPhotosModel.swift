@@ -21,9 +21,6 @@ class TestPhotosModel: XCTestCase {
 
     override func tearDownWithError() throws { }
 
-    //    item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
-    //    item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
-
     func testRelativeCalledForPublished() throws {
         
         let expectedDateString = "publisheddate"
@@ -117,6 +114,9 @@ class TestPhotosModel: XCTestCase {
     }
 }
 
+/**
+ Mock Webservice
+ */
 class MockFlickrWebService: FlickrWebService {
     func cancel() { }
     
@@ -133,22 +133,27 @@ class MockFlickrWebService: FlickrWebService {
     }
 }
 
+/**
+ Mock DateFormatter
+ 
+     item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
+ 
+     item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
+*/
+
 class MockDateFormatter: PhotoDateFormatting {
-    lazy var formatter: DateFormatter = DateFormatter()
-    lazy var isoFormatter: ISO8601DateFormatter = ISO8601DateFormatter()
+    lazy var timeFormatter = RelativeDateTimeFormatter()
+    lazy var formatter = DateFormatter()
+    lazy var isoFormatter = ISO8601DateFormatter()
     
     typealias StringDateFromISODateStringHandler = (String) -> String
     typealias RelativeStringDateFromDateStringHandler = (String) -> String
 
-    //    item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
-
     private var stringDateFromISODateStringHandler: StringDateFromISODateStringHandler?
-
-    //    item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
 
     private var relativeStringDateFromDateStringHandler: RelativeStringDateFromDateStringHandler?
 
-    // DATESTR
+    // DATE STR
     
     func relativeStringDateFromDateString(_ dateString: String) -> String {
         relativeStringDateFromDateStringHandler?(dateString) ?? ""

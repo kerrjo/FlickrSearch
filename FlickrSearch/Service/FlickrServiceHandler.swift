@@ -35,22 +35,22 @@ class FlickrServiceHandler: FlickrWebService {
             guard let httpResponse = response as? HTTPURLResponse else {
                 return completion(.failure(.badresponse))
             }
+            
             guard (200...299).contains(httpResponse.statusCode) else {
                 print("error statuscode", httpResponse.statusCode)
                 return completion(.failure(.statusCode))
             }
+            
             guard let jsonData = data else { return completion(.failure(.badresponseData)) }
                                                                
             let jsonDecoder = JSONDecoder()
             do {
                 let results = try jsonDecoder.decode(Flickr.self, from: jsonData)
                 completion(.success(results))
-
             } catch {
                 print(error)
                 return completion(.failure(.parse))
             }
-            
         }
         dataTask?.resume()
     }
