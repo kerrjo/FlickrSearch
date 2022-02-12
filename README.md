@@ -2,7 +2,11 @@
 
 built with Xcode _Version 13.2.1 (13C100)_
 
+
 <img width="319" alt="Screen Shot 2022-02-11 at 6 12 05 PM" src="https://user-images.githubusercontent.com/12850537/153683428-5637beb2-22e4-477b-b915-1249006c93f0.png">
+
+A branch called `submitted` https://github.com/kerrjo/FlickrSearch/tree/submitted was created at the TimeLimit mark in case i commit or push to `main` after the fact.
+
 
 ## Issues and Concerns
 
@@ -133,6 +137,11 @@ From this one test, many more tests can be derived from the same pattern.
 - proper image url
 - proper date formatting (mock the service, but use the real date formatter)
 - author formatting
+
+
+### The canvas was not used and needs to be to fine tune layout
+
+Didnt have time to supply data to the view for preview
 
 
 ## Usage
