@@ -93,6 +93,47 @@ Instead of going deep in any one area i chose to go broad,
 - the detail view uses a simple struct instead of an @ObeservedObject of the viewModel
 - NavigationLink is the image as opposed to a `EmptyView()` NavigationLink with `isDetailDisplayed` `@State` property.
 
+### One unit test took a substantial amount of time
+
+I wanted more tests, from the mocks provided many more tests could be performed
+
+```
+ func testStringForDateTaken() throws {
+        let expectedDateString = "datetaken"
+        let mockFlickr = Flickr(title: "", link: "", flickrDescription: "", modified: "", generator: "",
+                                items:[Item(title: "", link: "", media: Media(m: "http://some.com"),
+                                            dateTaken: expectedDateString, itemDescription: "", published: "",
+                                            author: "", authorID: "", tags: "")
+                                      ])
+```
+here, i wanted to test that the date formatter returns the expected data
+
+pretty much mocking output from the service call and checking results
+
+what ended up being a working solution is to subscribe to to the publisher before checking.
+
+```
+        sut.$photos
+            .sink { value in
+                print(value)
+                photosResult = value
+                expectationPhotos.fulfill()
+            }
+            .store(in: &cancellables)
+
+        sut.fetch(using: "")
+        waitForExpectations(timeout: 0.1, handler: nil)
+        print(photosResult)
+        XCTAssertEqual(photosResult.count, 1)
+        XCTAssertEqual(photosResult[0].dateTakenString, "formatted" + expectedDateString)
+```
+From this one test, many more tests can be derived from the same pattern.
+- check count on success
+- check count 0 on error any of teh fetch errors
+- proper image url
+- proper date formatting (mock the service, but use the real date formatter)
+- author formatting
+
 
 ## Usage
 
