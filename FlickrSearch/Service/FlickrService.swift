@@ -30,15 +30,19 @@ extension FlickrWebService {
         components.queryItems = [
             URLQueryItem(name: "format", value: "json"),
             URLQueryItem(name: "nojsoncallback", value: "1"),
-            URLQueryItem(name: "per_page", value: "\(itemsPerPage)"),
-            URLQueryItem(name: "tagmode", value: "any"),
-
             URLQueryItem(name: "tags", value: searchTerm)
         ]
         return components.url
     }
     
-    var itemsPerPage: Int { 40 }
+    // these params do not work
+    // per_page=40
+    // tagmode=any
+    //    URLQueryItem(name: "per_page", value: "\(itemsPerPage)"),
+    //    URLQueryItem(name: "tagmode", value: "any"),
+    
+    
+    var itemsPerPage: Int { 30 }
 }
 
 
