@@ -23,6 +23,7 @@
 		5561608827B6E9F700CF3F34 /* PhotosModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5561608727B6E9F700CF3F34 /* PhotosModelTests.swift */; };
 		556A943727B7682F0093AD7C /* PhotoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943627B7682F0093AD7C /* PhotoItemTests.swift */; };
 		556A943927B851F00093AD7C /* PhotoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943827B851F00093AD7C /* PhotoItem.swift */; };
+		556A943B27B8B8D30093AD7C /* FlickrRestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943A27B8B8D30093AD7C /* FlickrRestService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		5561608727B6E9F700CF3F34 /* PhotosModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosModelTests.swift; sourceTree = "<group>"; };
 		556A943627B7682F0093AD7C /* PhotoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItemTests.swift; sourceTree = "<group>"; };
 		556A943827B851F00093AD7C /* PhotoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItem.swift; sourceTree = "<group>"; };
+		556A943A27B8B8D30093AD7C /* FlickrRestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrRestService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				5561608527B6DDE200CF3F34 /* PhotoDates.swift */,
 				5561607D27B6AE6400CF3F34 /* FlickrService.swift */,
 				5561607F27B6B05500CF3F34 /* FlickrServiceHandler.swift */,
+				556A943A27B8B8D30093AD7C /* FlickrRestService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -314,6 +317,7 @@
 				5561607C27B6AE3E00CF3F34 /* Flickr.swift in Sources */,
 				5561608227B6C3E300CF3F34 /* PhotoView.swift in Sources */,
 				5561607E27B6AE6400CF3F34 /* FlickrService.swift in Sources */,
+				556A943B27B8B8D30093AD7C /* FlickrRestService.swift in Sources */,
 				5561608627B6DDE200CF3F34 /* PhotoDates.swift in Sources */,
 				5561605227B6ABA500CF3F34 /* FlickrSearchApp.swift in Sources */,
 				556A943927B851F00093AD7C /* PhotoItem.swift in Sources */,
