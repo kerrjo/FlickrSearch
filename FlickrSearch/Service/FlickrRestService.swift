@@ -14,11 +14,68 @@ import Combine
  https://developer.apple.com/documentation/foundation/urlsession/processing_url_session_data_task_results_with_combine
  */
 
+@available (iOS 15, *)
+private extension FlickrNetworkWebServiceHandler {
+
+    func fetchFlickrItems(_ url: URL) async throws -> FlickrPhotosResult {
+        print(#function, url)
+        let decoder = JSONDecoder()
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let results = try decoder.decode(Flickr.self, from: data)
+        return .success(results)
+    }
+    
+    func fetchFlickrItemsErrorHandled(_ url: URL) async throws -> FlickrPhotosResult {
+        print(#function, url)
+        let decoder = JSONDecoder()
+        let (data, urlResponse): (Data, URLResponse)
+        do {
+            (data, urlResponse) = try await URLSession.shared.data(from: url)
+
+            guard let httpResponse = urlResponse as? HTTPURLResponse else {
+//                throw URLError(.badServerResponse)
+                throw FetchError.badresponse
+//                return .failure(.badresponse)
+            }
+            guard (200...299).contains(httpResponse.statusCode) else {
+                print("error statuscode", httpResponse.statusCode)
+                throw FetchError.statusCode
+//                throw URLError(.badServerResponse)
+//                return .failure(.statusCode)
+            }
+            
+        } catch {
+            return .failure(.error(error))
+        }
+
+        let results: FlickrResponse
+        do {
+            results = try decoder.decode(Flickr.self, from: data)
+        } catch {
+            return .failure(.parse)
+        }
+        
+        return .success(results)
+    }
+
+}
+
 /**
  A cancelling FlickrWebService Class that submits a url request and srtores the task in dataTask to cancel later if needed
  combin request with  a FlickrWebService api with completion result
  */
 class FlickrNetworkWebServiceHandler: FlickrWebService {
+    @available (iOS 15, *)
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult {
+        guard let url = flickrServiceURL(searchTerm: searchTerm) else {
+            throw FetchError.malformedURL
+//            return .failure(.malformedURL)
+        }
+        print(#function, url)
+        let itemsFetchResult = try await fetchFlickrItems(url)
+        return itemsFetchResult
+    }
+    
     func cancel() {
         cancellable?.cancel()
     }
@@ -142,6 +199,9 @@ extension FlickrNetworkWebServiceHandler {
         return NetworkService.request(url: url)
     }
 }
+
+
+
 
 
 // MARK: sample retry service ServiceHandler not FlickrWebService

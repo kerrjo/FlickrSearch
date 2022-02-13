@@ -13,17 +13,46 @@ class PhotosModel: ObservableObject {
     private let dateFormatter: PhotoDateFormatting?
     
     func fetch(using term: String) {
+        if #available(iOS 15, *) {
+            fetchAsync(using: term)
+//            fetchNormal(using: term)
+        } else {
+            fetchNormal(using: term)
+        }
+    }
+    
+    func fetchNormal(using term: String) {
         service?.fetchPhotos(searchTerm: term) { [weak self] in
             switch $0 {
             case .failure(let error):
                 print(error)
-
+                
             case .success(let response):
                 print(#function, response.title, "count", response.items.count)
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.photos = self.itemsFromResponse(response)
                 }
+            }
+        }
+    }
+    
+    @available(iOS 15, *)
+    func fetchAsync(using term: String) {
+        Task {
+            let results = try await service?.fetchFlickrPhotos(searchTerm: term)
+            switch results {
+            case .failure(let error):
+                print(error)
+                
+            case .success(let response):
+                print(#function, response.title, "count", response.items.count)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.photos = self.itemsFromResponse(response)
+                }
+            case .none:
+                break
             }
         }
     }

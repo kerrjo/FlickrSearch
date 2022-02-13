@@ -17,11 +17,17 @@ enum FetchError: Error {
     case notImplemented
 }
 
+typealias FlickrPhotosResult = Result<Flickr, FetchError>
+typealias FlickrPhotosResultCompletion = (FlickrPhotosResult) -> ()
+
 protocol FlickrWebService {
     func cancel()
-    func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ())
+    func fetchPhotos(searchTerm: String, completion: @escaping FlickrPhotosResultCompletion)
     func flickrServiceURL(searchTerm: String) -> URL?
     var itemsPerPage: Int { get }
+
+    @available (iOS 15, *)
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult
 }
 
 extension FlickrWebService {
@@ -45,6 +51,12 @@ extension FlickrWebService {
     var itemsPerPage: Int { 30 }
 }
 
+@available (iOS 15, *)
+extension FlickrWebService {
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult {
+        .failure(.notImplemented)
+    }
+}
 
 /**
  https://api.flickr.com/services/feeds/photos_public.gne?format=json&nojsoncallback=1&tags=porcupine
