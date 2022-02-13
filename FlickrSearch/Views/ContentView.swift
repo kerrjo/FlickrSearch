@@ -21,7 +21,7 @@ class TextFieldObserver : ObservableObject {
     
     init() {
         $searchText
-            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(0.70), scheduler: DispatchQueue.main)
             .sink(receiveValue: { [weak self] in
                 self?.debouncedText = $0
             } )
@@ -40,7 +40,6 @@ struct TextFieldWithDebounce : View {
     var body: some View {
         VStack {
             TextField("Search Tags", text: $textObserver.searchText)
-//            TextField("Search Tags", text: $textObserver.searchText.onChange(textChanged))
                 .frame(height: 30)
                 .padding(.leading, 5)
                 .overlay(
@@ -55,9 +54,40 @@ struct TextFieldWithDebounce : View {
         }
     }
     
-    /// debug
+    /// debug - use TextField("Search Tags", text: $textObserver.searchText.onChange(textChanged))
     func textChanged(to value: String) {
         print(#function, "", value)
+    }
+}
+
+/*
+ a View contains a Image loaded from url if available
+ otherwise place holder photo
+ */
+struct PhotoItemView : View {
+    var item: PhotoItem?
+    @Binding var square: Bool
+    var padding = 0.0
+    
+    var body: some View {
+        if let url = square ? item?.imageURLsquare : item?.imageURL {
+            AsyncImage(url: url) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } placeholder: {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .accentColor(Color.white)
+                    .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
+                    .padding(padding)
+            }
+        } else {
+            Image(systemName: "photo")
+                .resizable()
+                .scaledToFit()
+                .aspectRatio(contentMode: .fit)
+        }
     }
 }
 
@@ -71,22 +101,20 @@ struct ContentView: View {
     @State private var searchTerm = ""
     @State private var gridSplit = 3
     @State private var gridSpacing = 8.0
-    @State private var square = true
- 
+    @State private var square = false
+    
     private func gridItems(for width: CGFloat) -> [GridItem] {
         // interior bewteen items and outside = ( gridSplit + 1 )
         let gridSplitWidth = width - gridSpacing * Double(gridSplit + 1)
         let gridItemWidth = gridSplitWidth / Double(gridSplit)
         return (1...gridSplit).map { _ in GridItem(.fixed(gridItemWidth), spacing: gridSpacing) }
     }
-
+    
     var body: some View {
         NavigationView {
             GeometryReader { geom in
                 VStack {
-                    
                     TextFieldWithDebounce(debouncedText: $searchTerm.onChange(searchTermChanged))
-                    
                     ZStack {
                         Color.indigo.opacity(0.5)
                             .edgesIgnoringSafeArea([.bottom])
@@ -94,22 +122,9 @@ struct ContentView: View {
                         ScrollView {
                             LazyVGrid(columns: gridItems(for: geom.size.width), spacing: gridSpacing) {
                                 ForEach(viewModel.photos, id: \.id) { item in
-                                    NavigationLink {
-                                        PhotoView(item: item)
-                                    } label: {
-                                        AsyncImage(url: square ? item.imageURLsquare : item.imageURL) { image in
-                                            image
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                        } placeholder: {
-                                            ProgressView()
-                                                .progressViewStyle(.circular)
-                                                .accentColor(Color.white)
-                                                .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
-                                                .padding((geom.size.width / Double(gridSplit)) / 2.2)
-                                        }
+                                    NavigationLink(destination: PhotoView(item: item)) {
+                                        PhotoItemView(item: item, square: $square, padding: (geom.size.width / Double(gridSplit)) / 2.2)
                                     }
-                                    //.navigationBarHidden(true)
                                 }
                             }
                         } // scroll view
