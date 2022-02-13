@@ -40,6 +40,7 @@ struct TextFieldWithDebounce : View {
     var body: some View {
         VStack {
             TextField("Search Tags", text: $textObserver.searchText)
+//            TextField("Search Tags", text: $textObserver.searchText.onChange(textChanged))
                 .frame(height: 30)
                 .padding(.leading, 5)
                 .overlay(
@@ -47,9 +48,16 @@ struct TextFieldWithDebounce : View {
                         .stroke(Color.indigo.opacity(0.5), lineWidth: 1)
                 )
                 .padding(.horizontal, 20)
-        }.onReceive(textObserver.$debouncedText) {
+                .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+        }
+        .onReceive(textObserver.$debouncedText) {
             debouncedText = $0
         }
+    }
+    
+    /// debug
+    func textChanged(to value: String) {
+        print(#function, "", value)
     }
 }
 
@@ -63,7 +71,7 @@ struct ContentView: View {
     @State private var searchTerm = ""
     @State private var gridSplit = 3
     @State private var gridSpacing = 8.0
-    @State private var square = false
+    @State private var square = true
  
     private func gridItems(for width: CGFloat) -> [GridItem] {
         // interior bewteen items and outside = ( gridSplit + 1 )
@@ -76,7 +84,9 @@ struct ContentView: View {
         NavigationView {
             GeometryReader { geom in
                 VStack {
+                    
                     TextFieldWithDebounce(debouncedText: $searchTerm.onChange(searchTermChanged))
+                    
                     ZStack {
                         Color.indigo.opacity(0.5)
                             .edgesIgnoringSafeArea([.bottom])
