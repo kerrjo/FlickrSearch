@@ -18,7 +18,7 @@ struct PhotoView: View {
             ScrollView {
                 VStack {
                     Text("Taken on " + (item?.dateTakenString ?? ""))
-                        .colorInvert()
+                        .foregroundColor(Color.gray)
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.horizontal, 16)
@@ -64,7 +64,8 @@ struct PhotoView: View {
                             .padding()
                         
                     }
-                    .colorInvert()
+                    .foregroundColor(Color.white)
+                    //.colorInvert()
                 } // Vstack
                 .navigationTitle("Photo")
             }
