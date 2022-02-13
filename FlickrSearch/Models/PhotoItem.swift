@@ -23,6 +23,7 @@ class PhotoItem: Identifiable {
     private(set) var dateTakenString: String
     let published: String
     let author: String
+    var imageDimensions: (w: Double, h: Double) = (w: 0.0, h: 0.0)
     
     convenience init() {
         self.init(with: Item(title: "", link: "", media: Media(m: ":"), dateTaken: "", itemDescription: "", published: "", author: "", authorID: "", tags: ""),
@@ -46,8 +47,6 @@ class PhotoItem: Identifiable {
         }
         self.dateTakenString = dateTakenString
         self.published = published
-        
-        
     }
     
 }
