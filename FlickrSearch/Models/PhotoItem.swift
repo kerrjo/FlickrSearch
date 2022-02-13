@@ -53,50 +53,29 @@ class PhotoItem: Identifiable {
 
 extension PhotoItem: ImageSizes {
     var imageURLsmall: URL? {
-        guard let url = imageURL else {return nil }
-        let ext = url.pathExtension
-        var new_url = url.deletingPathExtension()
-        let fname: String =
-        new_url.lastPathComponent.hasSuffix("_m") ? String(new_url.lastPathComponent.dropLast(2)) : new_url.lastPathComponent
-        new_url.deleteLastPathComponent()
-        new_url.appendPathComponent(fname + "_s")
-        new_url.appendPathExtension(ext)
-        return new_url
+        urlFromImage("_m", toSizeType: "_s")
     }
     
     var imageURLlarge: URL? {
-        guard let url = imageURL else {return nil }
-        let ext = url.pathExtension
-        var new_url = url.deletingPathExtension()
-        let fname: String =
-        new_url.lastPathComponent.hasSuffix("_m") ? String(new_url.lastPathComponent.dropLast(2)) : new_url.lastPathComponent
-        new_url.deleteLastPathComponent()
-        new_url.appendPathComponent(fname + "_b")
-        new_url.appendPathExtension(ext)
-        print(new_url)
-        return new_url
+        urlFromImage("_m", toSizeType: "_b")
     }
     
     var imageURLthumbnail: URL? {
-        guard let url = imageURL else {return nil }
-        let ext = url.pathExtension
-        var new_url = url.deletingPathExtension()
-        let fname: String =
-        new_url.lastPathComponent.hasSuffix("_m") ? String(new_url.lastPathComponent.dropLast(2)) : new_url.lastPathComponent
-        new_url.deleteLastPathComponent()
-        new_url.appendPathComponent(fname + "_t")
-        new_url.appendPathExtension(ext)
-        return new_url
+        urlFromImage("_m", toSizeType: "_t")
     }
     
     var imageURLsquare: URL? {
+        urlFromImage("_m", toSizeType: "_q")
+    }
+    
+    private func urlFromImage(_ fromSizeType: String, toSizeType: String) -> URL? {
         guard let url = imageURL else {return nil }
         let ext = url.pathExtension
         var new_url = url.deletingPathExtension()
         let fname: String =
-        new_url.lastPathComponent.hasSuffix("_m") ? String(new_url.lastPathComponent.dropLast(2)) : new_url.lastPathComponent
+        new_url.lastPathComponent.hasSuffix(fromSizeType) ? String(new_url.lastPathComponent.dropLast(2)) : new_url.lastPathComponent
         new_url.deleteLastPathComponent()
-        new_url.appendPathComponent(fname + "_q")
+        new_url.appendPathComponent(fname + toSizeType)
         new_url.appendPathExtension(ext)
         print(new_url)
         return new_url
