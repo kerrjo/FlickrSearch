@@ -8,40 +8,10 @@
 import Foundation
 import Combine
 
-/*
- https://stackoverflow.com/questions/58251478/what-is-the-best-way-to-handle-errors-in-combine
- Combine is strongly typed with respect to errors, so you must transform your errors to the correct type using mapError or be sloppy like RxSwift and decay everything to Error.
- */
-enum NetworkService {
-    enum FailureReason : Error {
-        case sessionFailed(error: URLError)
-        case decodingFailed
-        case other(Error)
-    }
-    
-    static func request<SomeDecodable: Decodable>(url: URL) -> AnyPublisher<SomeDecodable, FailureReason> {
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data)
-            .decode(type: SomeDecodable.self, decoder: JSONDecoder())
-            .mapError({ error in
-                switch error {
-                case is Swift.DecodingError:
-                    return .decodingFailed
-                case let urlError as URLError:
-                    return .sessionFailed(error: urlError)
-                default:
-                    return .other(error)
-                }
-            })
-            .eraseToAnyPublisher()
-    }
-}
-
-
 /**
  Processing URL Session Data Task Results with Combine
  Use a chain of asynchronous operators to receive and process data fetched from a URL.
-  https://developer.apple.com/documentation/foundation/urlsession/processing_url_session_data_task_results_with_combine
+ https://developer.apple.com/documentation/foundation/urlsession/processing_url_session_data_task_results_with_combine
  */
 
 /**
@@ -55,13 +25,20 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
     
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else { return completion(.failure(.malformedURL)) }
-        print(url)
-        fetch(url, completion: completion)
+        print(#function, url)
+        
+        fetchThisImpl(url, completion: completion)
+        //        fetchWebServiceNetworkService(url, completion: completion)
+        //        fetchWebServiceDataNetworkService(url, completion: completion)
     }
     
     private var cancellable: AnyCancellable?
     
-    private func fetch(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
+    // This class implements
+    
+    private func fetchThisImpl(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
+        print(#function, url)
+        
         cancellable = URLSession.shared
             .dataTaskPublisher(for: url)
             .tryMap() { element -> Data in
@@ -76,23 +53,102 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
                 switch $0 {
                 case .failure(let error):
                     completion(.failure(.error(error)))
-                case .finished:
-                    break
+                case .finished: break
                 }
                 print ("Received completion: \($0).")
-            },
-                  receiveValue: { response in
-                print ("Received user: \(response).")
+            }, receiveValue: { response in
                 completion(.success(response))
             })
+    }
+    
+    // Uses general Network service
+    
+    private func fetchWebServiceNetworkService(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
+        //        cancellable = fetchUsinNetworkService(url)
+        cancellable = fetchUsinNetworkService_debug(url)
+            .sink(receiveCompletion: {
+                switch $0 {
+                case .failure(let error):
+                    completion(.failure(.error(error)))
+                case .finished: break
+                }
+                print ("Received completion: \($0).")
+            }, receiveValue: { response in
+                completion(.success(response))
+            })
+    }
+    
+    // Uses general Data Network service
+    
+    private func fetchWebServiceDataNetworkService(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
+        //        cancellable = fetchUsinDataNetworkService(url)
+        cancellable = fetchUsinDataNetworkService_debug(url)
+            .sink(receiveCompletion: {
+                switch $0 {
+                case .failure(let error):
+                    completion(.failure(.error(error)))
+                case .finished: break
+                }
+                print ("Received completion: \($0).")
+            }, receiveValue: { response in
+                completion(.success(response))
+            })
+    }
+    
+    private let dataService = DataNetworkService()
+}
+
+/// Data Network service usage
+
+extension FlickrNetworkWebServiceHandler {
+    /// uses Sample service general handler
+    
+    private func fetchUsinDataNetworkService(_ url: URL) -> AnyPublisher<Flickr, Error> {
+        fetchDataUsinDataNetworkService(url)
+            .decode(type: Flickr.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+    }
+    
+    private func fetchDataUsinDataNetworkService(_ url: URL) -> AnyPublisher<Data, DataNetworkService.APIError> {
+        dataService.fetch(url: url)
+    }
+    
+    /// debug versions
+    
+    private func fetchUsinDataNetworkService_debug(_ url: URL) -> AnyPublisher<Flickr, Error> {
+        print(#function, url)
+        return fetchDataUsinDataNetworkService_debug(url)
+            .decode(type: Flickr.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+    }
+    
+    private func fetchDataUsinDataNetworkService_debug(_ url: URL) -> AnyPublisher<Data, DataNetworkService.APIError> {
+        print(#function, url)
+        return dataService.fetch(url: url)
+    }
+}
+
+/// Network service usage
+
+extension FlickrNetworkWebServiceHandler {
+    /// uses general handler
+    
+    private func fetchUsinNetworkService(_ url: URL) -> AnyPublisher<Flickr, NetworkService.FailureReason> {
+        NetworkService.request(url: url)
+    }
+    
+    private func fetchUsinNetworkService_debug(_ url: URL) -> AnyPublisher<Flickr, NetworkService.FailureReason> {
+        print(#function, url)
+        return NetworkService.request(url: url)
     }
 }
 
 
+// MARK: some ServiceHandler not FlickrWebService
+
 /**
  A Combine publisher for Flikr request
  */
-
 class FlickrNetworkServiceHandler {
     private(set) var dataTask: URLSessionDataTask?
     
@@ -105,13 +161,15 @@ class FlickrNetworkServiceHandler {
         ]
         return components.url
     }
-
+    
     private var cancellable: AnyCancellable?
     
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else { return completion(.failure(.malformedURL)) }
         print(url)
-        cancellable = fetch(url)
+        
+        cancellable = fetchUsinDataNetworkService(url)
+        //        cancellable = fetchUsinNetworkService(url)
             .sink(receiveCompletion: {
                 switch $0 {
                 case .failure(let error):
@@ -126,12 +184,7 @@ class FlickrNetworkServiceHandler {
                 completion(.success(response))
                 
             })
-        
     }
-    
-    //            .sink(receiveCompletion: { print("Received completion: \($0).") },
-    //                  receiveValue: { print("Received data: \($0.data).") })
-
     
     private func fetch(_ url: URL) -> AnyPublisher<Flickr, Error> {
         print(url)
@@ -145,25 +198,47 @@ class FlickrNetworkServiceHandler {
             }
             .decode(type: Flickr.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
-        
-//            .sink(receiveCompletion: { print ("Received completion: \($0).") },
-//                  receiveValue: { response in print ("Received user: \(response).")})
     }
+    
+    /// uses general handler
+    
+    private func fetchUsinNetworkService(_ url: URL) -> AnyPublisher<Flickr, NetworkService.FailureReason> {
+        print(url)
+        return NetworkService.request(url: url)
+    }
+    
+    /// uses Sample service general handler
+    
+    private func fetchUsinDataNetworkService(_ url: URL) -> AnyPublisher<Flickr, Error> {
+        print(url)
+        return fetchDataUsinDataNetworkService(url)
+            .decode(type: Flickr.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+    }
+    
+    private func fetchDataUsinDataNetworkService(_ url: URL) -> AnyPublisher<Data, DataNetworkService.APIError> {
+        print(url)
+        return dataService.fetch(url: url)
+    }
+    
+    private let dataService = DataNetworkService()
 }
+
+
+// MARK: sample retry service ServiceHandler not FlickrWebService
 
 /**
  Retry Transient Errors and Catch and Replace Persistent Errors
  Any app that uses the network should expect to encounter errors, and your app should handle them gracefully. Because transient network errors are fairly common, you may want to immediately retry a failed data task.
  
  */
-
 class RetryNetworkServiceHandler {
     private var cancellable: AnyCancellable?
     private var fallbackUrlSession: URLSession { URLSession.shared }
     func fetch() {
         let url = URL(string: ":")!
         let fallbackURL = URL(string: ":")!
-
+        
         let pub = URLSession.shared
             .dataTaskPublisher(for: url)
             .retry(1)
@@ -171,47 +246,11 @@ class RetryNetworkServiceHandler {
                 self.fallbackUrlSession.dataTaskPublisher(for: fallbackURL)
             }
         cancellable = pub
-            .sink(receiveCompletion: { print("Received completion: \($0).") },
-                  receiveValue: { print("Received data: \($0.data).") })
+            .sink(receiveCompletion: {
+                print("Received completion: \($0).")
+            }, receiveValue: {
+                print("Received data: \($0.data).")
+            })
     }
 }
-/*
- https://gist.github.com/stinger/7cb1a81facf7f846e3d53f60be34dd1e
- */
 
-class SampleNetworkService {
-    
-    enum APIError: Error, LocalizedError {
-        case unknown, apiError(reason: String)
-        
-        var errorDescription: String? {
-            switch self {
-            case .unknown:
-                return "Unknown error"
-            case .apiError(let reason):
-                return reason
-            }
-        }
-    }
-    
-    func fetch(url: URL) -> AnyPublisher<Data, APIError> {
-        let request = URLRequest(url: url)
-        
-        return URLSession.DataTaskPublisher(request: request, session: .shared)
-            .tryMap { data, response in
-                guard let httpResponse = response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode else {
-                    throw APIError.unknown
-                }
-                return data
-            }
-            .mapError { error in
-                if let error = error as? APIError {
-                    return error
-                } else {
-                    return APIError.apiError(reason: error.localizedDescription)
-                }
-            }
-            .eraseToAnyPublisher()
-    }
-}
- 
