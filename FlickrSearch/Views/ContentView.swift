@@ -44,7 +44,7 @@ struct TextFieldWithDebounce : View {
                 .padding(.leading, 5)
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
-                        .stroke(Color.blue, lineWidth: 1)
+                        .stroke(Color.indigo.opacity(0.5), lineWidth: 1)
                 )
                 .padding(.horizontal, 20)
         }.onReceive(textObserver.$debouncedText) {
@@ -61,12 +61,17 @@ struct ContentView: View {
     @StateObject var viewModel = PhotosModel()
     @StateObject var textObserver = TextFieldObserver()
     @State private var searchTerm = ""
-    @State private var gridSplit = 4
-    @State private var gridSpacing = 10.0
-    
-    
-    // let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    
+    @State private var gridSplit = 3
+    @State private var gridSpacing = 8.0
+    @State private var square = false
+ 
+    private func gridItems(for width: CGFloat) -> [GridItem] {
+        // interior bewteen items and outside = ( gridSplit + 1 )
+        let gridSplitWidth = width - gridSpacing * Double(gridSplit + 1)
+        let gridItemWidth = gridSplitWidth / Double(gridSplit)
+        return (1...gridSplit).map { _ in GridItem(.fixed(gridItemWidth), spacing: gridSpacing) }
+    }
+
     var body: some View {
         NavigationView {
             GeometryReader { geom in
@@ -76,19 +81,13 @@ struct ContentView: View {
                         Color.indigo.opacity(0.5)
                             .edgesIgnoringSafeArea([.bottom])
                         
-                        let gridSplitWidth = geom.size.width - gridSpacing * Double(gridSplit - 1)
-                        let gridItemWidth = gridSplitWidth / Double(gridSplit)
                         ScrollView {
-                            let columns = (1...gridSplit).map { _ in
-                                GridItem(.fixed(gridItemWidth))
-                            }
-                            LazyVGrid(columns: columns, spacing: gridSpacing) {
+                            LazyVGrid(columns: gridItems(for: geom.size.width), spacing: gridSpacing) {
                                 ForEach(viewModel.photos, id: \.id) { item in
-                                    
                                     NavigationLink {
                                         PhotoView(item: item)
                                     } label: {
-                                        AsyncImage(url: item.imageURL) { image in
+                                        AsyncImage(url: square ? item.imageURLsquare : item.imageURL) { image in
                                             image
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
@@ -97,13 +96,14 @@ struct ContentView: View {
                                                 .progressViewStyle(.circular)
                                                 .accentColor(Color.white)
                                                 .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
-                                                .padding(gridItemWidth / 2.0)
+                                                .padding((geom.size.width / Double(gridSplit)) / 2.2)
                                         }
                                     }
                                     //.navigationBarHidden(true)
                                 }
                             }
                         } // scroll view
+                        .padding(gridSpacing)
                     }
                 }
             } // navigation view

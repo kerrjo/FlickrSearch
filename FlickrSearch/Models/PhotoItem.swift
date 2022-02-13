@@ -13,8 +13,9 @@ protocol ImageSizes {
     var imageURLsmall: URL? { get }
     var imageURLlarge: URL? { get }
     var imageURLthumbnail: URL? { get }
-    
+    var imageURLsquare: URL? { get }
 }
+
 class PhotoItem: Identifiable {
     let id: UUID = UUID()
     let imageURL: URL?
@@ -86,6 +87,19 @@ extension PhotoItem: ImageSizes {
         new_url.deleteLastPathComponent()
         new_url.appendPathComponent(fname + "_t")
         new_url.appendPathExtension(ext)
+        return new_url
+    }
+    
+    var imageURLsquare: URL? {
+        guard let url = imageURL else {return nil }
+        let ext = url.pathExtension
+        var new_url = url.deletingPathExtension()
+        let fname: String =
+        new_url.lastPathComponent.hasSuffix("_m") ? String(new_url.lastPathComponent.dropLast(2)) : new_url.lastPathComponent
+        new_url.deleteLastPathComponent()
+        new_url.appendPathComponent(fname + "_q")
+        new_url.appendPathExtension(ext)
+        print(new_url)
         return new_url
     }
 }
