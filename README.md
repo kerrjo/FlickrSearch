@@ -188,4 +188,18 @@ Scroll to images that appear offscreen.
 <img width="319" alt="Screen Shot 2022-02-11 at 6 11 09 PM" src="https://user-images.githubusercontent.com/12850537/153683400-321fa490-e66a-4d0b-993f-10ee207a1239.png">
 
 
+# Enhancements
+
+the branch enhancements https://github.com/kerrjo/FlickrSearch/tree/enhancements
+already has imporvements
+
+PR #1 https://github.com/kerrjo/FlickrSearch/pull/1
+
+adds higher resolution images for detail 
+
+and adds debouncing for Text entry
+
+<img width="660" alt="image" src="https://user-images.githubusercontent.com/12850537/153743354-98b4cd7b-413e-443c-8675-75bcd5f355cd.png">
+
+
 
