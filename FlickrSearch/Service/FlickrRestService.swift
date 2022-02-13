@@ -27,7 +27,7 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else { return completion(.failure(.malformedURL)) }
         print(#function, url)
         
-        fetchThisImpl(url, completion: completion)
+        fetchWebService(url, completion: completion)
         //        fetchWebServiceNetworkService(url, completion: completion)
         //        fetchWebServiceDataNetworkService(url, completion: completion)
     }
@@ -36,7 +36,7 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
     
     // This class implements
     
-    private func fetchThisImpl(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
+    private func fetchWebService(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
         print(#function, url)
         
         cancellable = URLSession.shared

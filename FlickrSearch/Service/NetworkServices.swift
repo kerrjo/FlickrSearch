@@ -15,6 +15,7 @@ import Combine
  */
 
 
+// MARK: NetworkService
 /*
  a SomeDecodable NetworkService
 
@@ -45,6 +46,8 @@ enum NetworkService {
             .eraseToAnyPublisher()
     }
 }
+
+// MARK: Data NetworkService
 
 /*
  a Data NetworkService

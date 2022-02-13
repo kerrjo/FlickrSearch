@@ -16,12 +16,11 @@ import Combine
 class TextFieldObserver : ObservableObject {
     @Published var debouncedText = ""
     @Published var searchText = ""
-    
     private var subscriptions = Set<AnyCancellable>()
     
     init() {
         $searchText
-            .debounce(for: .seconds(0.70), scheduler: DispatchQueue.main)
+            .debounce(for: .seconds(0.50), scheduler: DispatchQueue.main)
             .sink(receiveValue: { [weak self] in
                 self?.debouncedText = $0
             } )
