@@ -122,26 +122,27 @@ struct PhotoView_Previews: PreviewProvider {
     static var currentBundle: Bundle = Bundle.main
     static var test_media = Media(m: currentBundle.url(forResource: "51851098944_7a65509216_z", withExtension: "jpg")!.absoluteString)
     static var imageURL: URL? = currentBundle.url(forResource: "51851098944_7a65509216_z", withExtension: "jpg")
-
+    
     static var previews: some View {
         Group {
             PhotoView(
                 item: PhotoItem(
-                    with: Item(
-                        title: "Picture This", link: "",
-                        media: test_media,
-//                        media: Media(m: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_c.jpg"),
-                        dateTaken: "Jan 18, 2000", itemDescription: "", published: "",
-                        author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
+                    with: Item(title: "Picture This", link: "",
+                               media: test_media,
+                               dateTaken: "Jan 18, 2000", itemDescription: "", published: "",
+                               author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
                     dateTakenString: "Feb 2, 2020 at 2:00 pm",
                     published: "3 days ago"),
                 title: "hello",
-                photoImage: PhotoItemImage(imageURL)
-            )
+                photoImage: PhotoItemImage(imageURL))
+                .previewDisplayName("Detail View")
             
             PhotoImageAsyncImageView(imageURL: imageURL)
+                .previewDisplayName("Image AsyncView")
             
             PhotoImageView(image: $image)
+                .previewDisplayName("uiImage ImageView")
         }
+        .preferredColorScheme(.dark)
     }
 }
