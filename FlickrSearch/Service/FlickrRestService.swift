@@ -57,7 +57,6 @@ private extension FlickrNetworkWebServiceHandler {
         
         return .success(results)
     }
-
 }
 
 /**
@@ -200,34 +199,3 @@ extension FlickrNetworkWebServiceHandler {
     }
 }
 
-
-
-
-
-// MARK: sample retry service ServiceHandler not FlickrWebService
-
-/**
- Retry Transient Errors and Catch and Replace Persistent Errors
- Any app that uses the network should expect to encounter errors, and your app should handle them gracefully. Because transient network errors are fairly common, you may want to immediately retry a failed data task.
- */
-class RetryNetworkServiceHandler {
-    private var cancellable: AnyCancellable?
-    private var fallbackUrlSession: URLSession { URLSession.shared }
-    func fetch() {
-        let url = URL(string: ":")!
-        let fallbackURL = URL(string: ":")!
-        
-        let pub = URLSession.shared
-            .dataTaskPublisher(for: url)
-            .retry(1)
-            .catch() { _ in
-                self.fallbackUrlSession.dataTaskPublisher(for: fallbackURL)
-            }
-        cancellable = pub
-            .sink(receiveCompletion: {
-                print("Received completion: \($0).")
-            }, receiveValue: {
-                print("Received data: \($0.data).")
-            })
-    }
-}

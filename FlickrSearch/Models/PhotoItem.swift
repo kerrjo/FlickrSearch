@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 typealias PhotoItems = [PhotoItem]
 
@@ -16,6 +17,22 @@ protocol ImageSizes {
     var imageURLsquare: URL? { get }
 }
 
+class PhotoItemImage: ObservableObject {
+    @Published var imageDimensionString: String = ""
+    @Published var image: UIImage?
+    
+    init(_ url: URL? = nil) {
+        //Task { await fetchImage(url) }
+    }
+    @available(iOS 15, *)
+    private func fetchImage(_ url: URL?) async {
+        if let url = url, let imageData = try? Data(contentsOf: url), let image = UIImage(data: imageData) {
+            imageDimensionString = "width \(Int(image.size.width)) X height \(Int(image.size.height))"
+            self.image = image
+        }
+    }
+}
+
 class PhotoItem: Identifiable {
     let id: UUID = UUID()
     let imageURL: URL?
@@ -23,7 +40,6 @@ class PhotoItem: Identifiable {
     private(set) var dateTakenString: String
     let published: String
     let author: String
-    var imageDimensions: (w: Double, h: Double) = (w: 0.0, h: 0.0)
     
     convenience init() {
         self.init(with: Item(title: "", link: "", media: Media(m: ":"), dateTaken: "", itemDescription: "", published: "", author: "", authorID: "", tags: ""),
@@ -32,11 +48,7 @@ class PhotoItem: Identifiable {
     }
     
     init(with item: Item, dateTakenString: String = "", published: String = "") {
-        if let url = URL(string: item.media.m) {
-            imageURL = url
-        } else {
-            imageURL = nil
-        }
+        imageURL = URL(string: item.media.m)
         title = item.title
         if let range = item.author.range(of: "@flickr.com ") {
             author = String(item.author.suffix(from: range.upperBound))
@@ -48,25 +60,13 @@ class PhotoItem: Identifiable {
         self.dateTakenString = dateTakenString
         self.published = published
     }
-    
 }
 
 extension PhotoItem: ImageSizes {
-    var imageURLsmall: URL? {
-        urlFromImage("_m", toSizeType: "_s")
-    }
-    
-    var imageURLlarge: URL? {
-        urlFromImage("_m", toSizeType: "_b")
-    }
-    
-    var imageURLthumbnail: URL? {
-        urlFromImage("_m", toSizeType: "_t")
-    }
-    
-    var imageURLsquare: URL? {
-        urlFromImage("_m", toSizeType: "_q")
-    }
+    var imageURLsmall: URL? { urlFromImage("_m", toSizeType: "_s") }
+    var imageURLlarge: URL? { urlFromImage("_m", toSizeType: "_b") }
+    var imageURLthumbnail: URL? { urlFromImage("_m", toSizeType: "_t") }
+    var imageURLsquare: URL? { urlFromImage("_m", toSizeType: "_q") }
     
     private func urlFromImage(_ fromSizeType: String, toSizeType: String) -> URL? {
         guard let url = imageURL else {return nil }

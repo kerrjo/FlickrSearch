@@ -66,7 +66,7 @@ class PhotosModel: ObservableObject {
     }
     
     init(_ service: FlickrWebService? = nil, dateFormatter: PhotoDateFormatting? = nil) {
-
+    
 //        self.service = service ?? FlickrServiceHandler()
         
         self.service = service ?? FlickrNetworkWebServiceHandler()

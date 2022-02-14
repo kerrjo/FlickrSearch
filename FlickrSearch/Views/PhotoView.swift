@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct PhotoView: View {
-    var item: PhotoItem?
+    var item: PhotoItem
+    @ObservedObject var photoImage: PhotoItemImage
     
     var body: some View {
         ZStack {
@@ -17,14 +18,37 @@ struct PhotoView: View {
             
             ScrollView {
                 VStack {
-                    Text("Taken on " + (item?.dateTakenString ?? ""))
+                    Text("Taken on " + item.dateTakenString)
                         .foregroundColor(Color.gray)
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 16)
                     
-                    if let imageURL = item?.imageURLlarge {
+                    // Image get UIImage
+
+                    /*
+                     uncomment  in init PhotoItemImage
+                     //Task { await fetchImage(url) }
+                     
+                     */
+                            
+//                    if let image = photoImage.image {
+//                        Image(uiImage: image)
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                    } else {
+//                        Image(systemName: "photo")
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                            .foregroundColor(Color.gray)
+//                            .padding(64)
+//                    }
+                    
+                    
+                    // AsyncImage
+                    
+                    if let imageURL = item.imageURLlarge {
                         AsyncImage(url: imageURL) { image in
                             image
                                 .resizable()
@@ -40,31 +64,32 @@ struct PhotoView: View {
                         Image(systemName: "photo.fill")
                     }
                     
-                    let title = item?.title ?? "unknown"
-                    let published = item?.published ?? ""
-                    let author = item?.author ?? ""
-                    
                     Group {
-                        Text(title)
+                        Text(item.title)
                             .font(.title)
-                            .padding()
-                        
                         Divider()
                         VStack {
                             Text("By")
                                 .font(.subheadline)
                             Spacer()
-                            Text(author)
+                            Text(item.author)
                                 .font(.subheadline)
                         }
                         
-                        Spacer()
-                        Text("Published " + published)
+                        Text("Published " + item.published)
                             .font(.caption)
-                            .padding()
-                        
+                            .padding(.top, 8)
+
+                        if photoImage.imageDimensionString.isEmpty {
+                            Spacer()
+                        } else {
+                            Text(photoImage.imageDimensionString)
+                                .font(.caption)
+                                .padding(8)
+                        }
                     }
                     .foregroundColor(Color.white)
+
                 } // Vstack
                 .navigationTitle("Photo")
             }
@@ -80,7 +105,9 @@ struct PhotoView_Previews: PreviewProvider {
                 title: "Picture This", link: "",
                 media: Media(m: "https://live.staticflickr.com/65535/51830987906_a3cf10f042_c.jpg"),
                 dateTaken: "Jan 18, 2000", itemDescription: "", published: "",
-                author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""))
+                author: "nobody@flickr.com (\"joker\")", authorID: "", tags: "")),
+            photoImage: PhotoItemImage()
+            
         )
     }
 }

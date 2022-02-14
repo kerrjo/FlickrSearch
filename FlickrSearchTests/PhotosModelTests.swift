@@ -34,9 +34,9 @@ class PhotosModelTests: XCTestCase {
         let expectationService = expectation(description: "")
         let mockService = MockFlickrWebService {
             expectationService.fulfill()
-            $0(.success(mockFlickr))
+            return .success(mockFlickr)
         }
-        
+
         let mockDateHandler = MockDateFormatter(relativeStringDateFromDateStringHandler: {
             XCTAssertEqual($0, expectedDateString)
             return "called\($0)"
@@ -59,11 +59,12 @@ class PhotosModelTests: XCTestCase {
 
         let expectationDateHandler = expectation(description: "")
         let expectationService = expectation(description: "")
+        
         let mockService = MockFlickrWebService {
-            $0(.success(mockFlickr))
             expectationService.fulfill()
+            return .success(mockFlickr)
         }
-
+        
         let mockDateHandler = MockDateFormatter(stringDateFromISODateStringHandler: {
             XCTAssertEqual($0, expectedDateString)
             expectationDateHandler.fulfill()
@@ -74,7 +75,6 @@ class PhotosModelTests: XCTestCase {
         sut.fetch(using: "")
         waitForExpectations(timeout: 0.1, handler: nil)
     }
-    
 
     func testStringForDateTaken() throws {
         let expectedDateString = "datetaken"
@@ -85,7 +85,7 @@ class PhotosModelTests: XCTestCase {
                                       ])
 
         let mockService = MockFlickrWebService {
-            $0(.success(mockFlickr))
+            .success(mockFlickr)
         }
 
         let mockDateHandler = MockDateFormatter(stringDateFromISODateStringHandler: {
@@ -119,19 +119,31 @@ class PhotosModelTests: XCTestCase {
  */
 class MockFlickrWebService: FlickrWebService {
     func cancel() { }
-    
-    typealias FetchCompletion = (Result<Flickr, FetchError>) -> ()
-    typealias FetchCompletionHandler = (FetchCompletion) -> ()
+
+    typealias FetchedResultsHandler = () -> Result<Flickr, FetchError>
+    private var fetchedResultsHandler: FetchedResultsHandler?
 
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
-        fetchCompletionHandler?(completion)
+        completion(fetchedResultsHandler?() ?? .failure(.notImplemented))
     }
-    
-    private var fetchCompletionHandler: FetchCompletionHandler?
-    init(_ fetchCompletion: FetchCompletionHandler? = nil) {
-        fetchCompletionHandler = fetchCompletion
+
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult {
+        return fetchedResultsHandler?() ?? .failure(.notImplemented)
+    }
+
+    init(fetchedResultsHandler: FetchedResultsHandler? = nil) {
+        self.fetchedResultsHandler = fetchedResultsHandler
     }
 }
+
+//    typealias FetchCompletion = (Result<Flickr, FetchError>) -> ()
+//    typealias FetchCompletionHandler = (FetchCompletion) -> ()
+//    typealias FetchAsyncHandler = () -> Result<Flickr, FetchError>
+//    private var fetchCompletionHandler: FetchCompletionHandler?
+//    private var fetchAsyncHandler: FetchAsyncHandler?
+//        fetchAsyncHandler: FetchAsyncHandler? = nil, _ fetchCompletion: FetchCompletionHandler? = nil) {
+//        fetchCompletionHandler = fetchCompletion
+//        self.fetchAsyncHandler = fetchAsyncHandler
 
 /**
  Mock DateFormatter
