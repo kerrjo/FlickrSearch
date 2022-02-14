@@ -11,7 +11,9 @@ class PhotosModel: ObservableObject {
     @Published var photos: [PhotoItem] = []
     private let service: FlickrWebService?
     private let dateFormatter: PhotoDateFormatting?
-    
+
+    @Published var title: [PhotoItem] = []
+
     func fetch(using term: String) {
         if #available(iOS 15, *) {
             fetchAsync(using: term)

@@ -22,7 +22,7 @@ class PhotoItemImage: ObservableObject {
     @Published var image: UIImage?
     
     init(_ url: URL? = nil) {
-        //Task { await fetchImage(url) }
+        Task { await fetchImage(url) }
     }
     @available(iOS 15, *)
     private func fetchImage(_ url: URL?) async {
@@ -49,16 +49,13 @@ class PhotoItem: Identifiable {
     
     init(with item: Item, dateTakenString: String = "", published: String = "") {
         imageURL = URL(string: item.media.m)
+        print(item.media.m)
         title = item.title
-        if let range = item.author.range(of: "@flickr.com ") {
-            author = String(item.author.suffix(from: range.upperBound))
-                .replacingOccurrences(of: "(\"", with: "")
-                .replacingOccurrences(of: "\")", with: "")
-        } else {
-            author = item.author
-        }
         self.dateTakenString = dateTakenString
         self.published = published
+        author = String(item.author.suffix(from: item.author.range(of: "@flickr.com ")?.upperBound ?? item.author.startIndex))
+            .replacingOccurrences(of: "(\"", with: "")
+            .replacingOccurrences(of: "\")", with: "")
     }
 }
 
@@ -83,6 +80,8 @@ extension PhotoItem: ImageSizes {
 }
 
 /*
+ Sample sizes taken from one image
+ 
  _s  <size label="Square" width="75" height="75"
  _q  <size label="Large Square" width="150" height="150"
  _t  <size label="Thumbnail" width="100" height="75"

@@ -27,34 +27,22 @@ private extension FlickrNetworkWebServiceHandler {
     
     func fetchFlickrItemsErrorHandled(_ url: URL) async throws -> FlickrPhotosResult {
         print(#function, url)
-        let decoder = JSONDecoder()
         let (data, urlResponse): (Data, URLResponse)
         do {
             (data, urlResponse) = try await URLSession.shared.data(from: url)
-
-            guard let httpResponse = urlResponse as? HTTPURLResponse else {
-//                throw URLError(.badServerResponse)
-                throw FetchError.badresponse
-//                return .failure(.badresponse)
-            }
-            guard (200...299).contains(httpResponse.statusCode) else {
-                print("error statuscode", httpResponse.statusCode)
-                throw FetchError.statusCode
-//                throw URLError(.badServerResponse)
-//                return .failure(.statusCode)
-            }
-            
+            guard let httpResponse = urlResponse as? HTTPURLResponse else { throw FetchError.badresponse }
+            guard 200...299 ~= httpResponse.statusCode else { throw FetchError.statusCode }
         } catch {
-            return .failure(.error(error))
+            throw FetchError.error(error)
         }
-
+        
+        let decoder = JSONDecoder()
         let results: FlickrResponse
         do {
             results = try decoder.decode(Flickr.self, from: data)
         } catch {
-            return .failure(.parse)
+            throw FetchError.parse
         }
-        
         return .success(results)
     }
 }
@@ -68,7 +56,6 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
     func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else {
             throw FetchError.malformedURL
-//            return .failure(.malformedURL)
         }
         print(#function, url)
         let itemsFetchResult = try await fetchFlickrItems(url)

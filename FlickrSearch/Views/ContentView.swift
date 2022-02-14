@@ -121,7 +121,7 @@ struct ContentView: View {
                         ScrollView {
                             LazyVGrid(columns: gridItems(for: geom.size.width), spacing: gridSpacing) {
                                 ForEach(viewModel.photos, id: \.id) { item in
-                                    NavigationLink(destination: PhotoView(item: item, photoImage: PhotoItemImage(item.imageURLlarge))) {
+                                    NavigationLink(destination: PhotoView(item: item, title: searchTerm, photoImage: PhotoItemImage(item.imageURLlarge))) {
                                         PhotoItemView(item: item, square: $square, padding: (geom.size.width / Double(gridSplit)) / 2.2)
                                     }
                                 }
