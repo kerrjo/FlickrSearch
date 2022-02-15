@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import UIKit
-import Combine
 
 struct PhotoView: View {
     var item: PhotoItem
@@ -28,14 +26,17 @@ struct PhotoView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                     
-                    
-                    // - Image View UIImage
-                    
-                    // ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
-                    
-                    // - AsyncImageView
-                    
-                    PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
+                    if #available(iOS 15, *) {
+                        // [ Image View UIImage ] obtains width and height
+                        
+                        // ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
+                        
+                        // [ AsyncImageView ]
+                        
+                        PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
+                    } else {
+                        ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
+                    }
                     
                     Group {
                         Text(item.title)
@@ -44,7 +45,11 @@ struct PhotoView: View {
                         VStack {
                             Text("By")
                                 .font(.subheadline)
-                            Spacer()
+                            
+                            if #available(iOS 15, *) {
+                                Spacer()
+                            }
+                            
                             Text(item.author)
                                 .font(.subheadline)
                         }
@@ -71,9 +76,9 @@ struct PhotoView: View {
 }
 
 /*
- a View contains a Image loaded from url if available
- otherwise place holder photo
+ a View contains a Image loaded from url if available otherwise place holder photo
  */
+@available(iOS 15, *)
 struct PhotoImageAsyncImageView : View {
     var imageURL: URL?
     var body: some View {
@@ -117,8 +122,10 @@ struct PhotoView_Previews: PreviewProvider {
                 title: "hello")
                 .previewDisplayName("Detail View")
             
-            PhotoImageAsyncImageView(imageURL: imageURL)
-                .previewDisplayName("Image AsyncView")
+            if #available(iOS 15, *) {
+                PhotoImageAsyncImageView(imageURL: imageURL)
+                    .previewDisplayName("Image AsyncView")
+            }
         }
         .preferredColorScheme(.dark)
     }

@@ -36,8 +36,13 @@ struct ContentView: View {
                 VStack {
                     TextFieldWithDebounce(debouncedText: $searchTerm.onChange(searchTermChanged))
                     ZStack {
-                        Color.indigo.opacity(0.5)
-                            .edgesIgnoringSafeArea([.bottom])
+                        if #available(iOS 15, *) {
+                            Color.indigo.opacity(0.5)
+                                .edgesIgnoringSafeArea([.bottom])
+                        } else {
+                            Color.blue.opacity(0.5)
+                                .edgesIgnoringSafeArea([.bottom])
+                        }
                         
                         ScrollView {
                             LazyVGrid(columns: gridItems(for: geom.size.width), spacing: gridSpacing) {
@@ -47,13 +52,13 @@ struct ContentView: View {
                                     }
                                 }
                             }
-                        } // scroll view
+                        }
                         .padding(gridSpacing)
                     }
                 }
             }
             .navigationTitle("Flickr Photos")
-        } // navigation view
+        }
         .navigationViewStyle(.stack)
     }
     

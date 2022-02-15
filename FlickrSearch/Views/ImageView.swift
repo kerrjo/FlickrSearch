@@ -49,51 +49,6 @@ struct ImageView: View {
     }
 }
 
-/*
- Load data from url
- */
-
-class ImageDataLoader: ObservableObject {
-    var didChange = PassthroughSubject<Data, Never>()
-    var data = Data() {
-        didSet {
-            didChange.send(data)
-        }
-    }
-    
-    private var imageURL: URL?
-    
-    @available(iOS 15, *)
-    private func fetchImage(_ url: URL?) async {
-        if let url = url, let imageData = try? Data(contentsOf: url) {
-            print(#function, url)
-            Task {
-                await MainActor.run(body: {
-                    self.data = imageData
-                })
-            }
-        }
-    }
-    
-    func load() {
-        if #available(iOS 15, *) {
-            Task { await fetchImage(imageURL) }
-        } else {
-            guard let url = imageURL else { return }
-            print(#function, url)
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                guard let data = data else { return }
-                DispatchQueue.main.async {
-                    self.data = data
-                }
-            }.resume()
-        }
-    }
-    
-    init(withURL url: URL?) {
-        imageURL = url
-    }
-}
 
 
 struct ImageView_Previews: PreviewProvider {
@@ -101,7 +56,6 @@ struct ImageView_Previews: PreviewProvider {
     static var nameForImageURL: String = "51861538056_63d8c1f0d6_z"
     static var imageURLValid: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
     static var imageURLInvalid: URL? = Bundle.main.url(forResource: "invalid", withExtension: "jpg")
-    static var test_media = Media(m: imageURLValid!.absoluteString)
     
     static var previews: some View {
         Group {

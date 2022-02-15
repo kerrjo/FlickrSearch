@@ -57,7 +57,6 @@ extension PhotoItem: ImageSizes {
         new_url.deleteLastPathComponent()
         new_url.appendPathComponent(fname + toSizeType)
         new_url.appendPathExtension(ext)
-        //print(new_url)
         return new_url
     }
 }

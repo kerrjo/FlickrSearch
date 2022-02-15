@@ -24,13 +24,18 @@
 		5564F1F027BBFE9000319DE7 /* TextFieldWithDebounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564F1EF27BBFE9000319DE7 /* TextFieldWithDebounce.swift */; };
 		5564F1F227BBFF4500319DE7 /* PhotoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564F1F127BBFF4500319DE7 /* PhotoItemView.swift */; };
 		5564F1F627BC0BB700319DE7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564F1F527BC0BB700319DE7 /* Extensions.swift */; };
+		5564F1FD27BC33C500319DE7 /* 51861868789_8eb044c624_z.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1F727BC33C500319DE7 /* 51861868789_8eb044c624_z.jpg */; };
+		5564F1FE27BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1F827BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg */; };
+		5564F1FF27BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1F927BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg */; };
+		5564F20027BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1FA27BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg */; };
+		5564F20127BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1FB27BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg */; };
+		5564F20227BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1FC27BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg */; };
+		5564F20427BC357700319DE7 /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564F20327BC357700319DE7 /* ImageDataLoader.swift */; };
 		556A943727B7682F0093AD7C /* PhotoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943627B7682F0093AD7C /* PhotoItemTests.swift */; };
 		556A943927B851F00093AD7C /* PhotoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943827B851F00093AD7C /* PhotoItem.swift */; };
 		556A943B27B8B8D30093AD7C /* FlickrRestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943A27B8B8D30093AD7C /* FlickrRestService.swift */; };
 		556A943D27B972790093AD7C /* NetworkServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943C27B972790093AD7C /* NetworkServices.swift */; };
 		556A943F27BAE8570093AD7C /* 51851098944_7a65509216_z.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 556A943E27BAE8560093AD7C /* 51851098944_7a65509216_z.jpg */; };
-		556A944127BB1EDA0093AD7C /* 51861868789_8eb044c624_z.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 556A944027BB1ED90093AD7C /* 51861868789_8eb044c624_z.jpg */; };
-		556A944527BB1F800093AD7C /* 51861538056_63d8c1f0d6_z.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 556A944427BB1F800093AD7C /* 51861538056_63d8c1f0d6_z.jpg */; };
 		556A944727BB56AA0093AD7C /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A944627BB56AA0093AD7C /* ImageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,16 +76,19 @@
 		5561608727B6E9F700CF3F34 /* PhotosModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosModelTests.swift; sourceTree = "<group>"; };
 		5564F1EF27BBFE9000319DE7 /* TextFieldWithDebounce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithDebounce.swift; sourceTree = "<group>"; };
 		5564F1F127BBFF4500319DE7 /* PhotoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItemView.swift; sourceTree = "<group>"; };
-		5564F1F327BC033200319DE7 /* 51861538056_63d8c1f0d6_q.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861538056_63d8c1f0d6_q.jpg; sourceTree = "<group>"; };
-		5564F1F427BC033B00319DE7 /* 51861538056_63d8c1f0d6_m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861538056_63d8c1f0d6_m.jpg; sourceTree = "<group>"; };
 		5564F1F527BC0BB700319DE7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		5564F1F727BC33C500319DE7 /* 51861868789_8eb044c624_z.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 51861868789_8eb044c624_z.jpg; path = ../../../../../Downloads/51861868789_8eb044c624_z.jpg; sourceTree = "<group>"; };
+		5564F1F827BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 51861538056_63d8c1f0d6_q.jpg; path = ../../../../../Downloads/51861538056_63d8c1f0d6_q.jpg; sourceTree = "<group>"; };
+		5564F1F927BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 51861538056_63d8c1f0d6_m.jpg; path = ../../../../../Downloads/51861538056_63d8c1f0d6_m.jpg; sourceTree = "<group>"; };
+		5564F1FA27BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861868789_8eb044c624_m.jpg; sourceTree = "<group>"; };
+		5564F1FB27BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861868789_8eb044c624_q.jpg; sourceTree = "<group>"; };
+		5564F1FC27BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 51861538056_63d8c1f0d6_z.jpg; path = ../../../../../Downloads/51861538056_63d8c1f0d6_z.jpg; sourceTree = "<group>"; };
+		5564F20327BC357700319DE7 /* ImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
 		556A943627B7682F0093AD7C /* PhotoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItemTests.swift; sourceTree = "<group>"; };
 		556A943827B851F00093AD7C /* PhotoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItem.swift; sourceTree = "<group>"; };
 		556A943A27B8B8D30093AD7C /* FlickrRestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrRestService.swift; sourceTree = "<group>"; };
 		556A943C27B972790093AD7C /* NetworkServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServices.swift; sourceTree = "<group>"; };
 		556A943E27BAE8560093AD7C /* 51851098944_7a65509216_z.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51851098944_7a65509216_z.jpg; sourceTree = "<group>"; };
-		556A944027BB1ED90093AD7C /* 51861868789_8eb044c624_z.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861868789_8eb044c624_z.jpg; sourceTree = "<group>"; };
-		556A944427BB1F800093AD7C /* 51861538056_63d8c1f0d6_z.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861538056_63d8c1f0d6_z.jpg; sourceTree = "<group>"; };
 		556A944627BB56AA0093AD7C /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -139,6 +147,7 @@
 				556A943427B70D370093AD7C /* Models */,
 				556A943527B70D460093AD7C /* Service */,
 				5564F1F527BC0BB700319DE7 /* Extensions.swift */,
+				5564F20327BC357700319DE7 /* ImageDataLoader.swift */,
 			);
 			path = FlickrSearch;
 			sourceTree = "<group>";
@@ -147,11 +156,13 @@
 			isa = PBXGroup;
 			children = (
 				5561605827B6ABA800CF3F34 /* Preview Assets.xcassets */,
+				5564F1F927BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg */,
+				5564F1F827BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg */,
+				5564F1FC27BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg */,
+				5564F1FA27BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg */,
+				5564F1FB27BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg */,
+				5564F1F727BC33C500319DE7 /* 51861868789_8eb044c624_z.jpg */,
 				556A943E27BAE8560093AD7C /* 51851098944_7a65509216_z.jpg */,
-				556A944027BB1ED90093AD7C /* 51861868789_8eb044c624_z.jpg */,
-				5564F1F427BC033B00319DE7 /* 51861538056_63d8c1f0d6_m.jpg */,
-				5564F1F327BC033200319DE7 /* 51861538056_63d8c1f0d6_q.jpg */,
-				556A944427BB1F800093AD7C /* 51861538056_63d8c1f0d6_z.jpg */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -313,11 +324,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				556A944127BB1EDA0093AD7C /* 51861868789_8eb044c624_z.jpg in Resources */,
+				5564F1FD27BC33C500319DE7 /* 51861868789_8eb044c624_z.jpg in Resources */,
+				5564F1FE27BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg in Resources */,
 				5561605927B6ABA800CF3F34 /* Preview Assets.xcassets in Resources */,
-				556A944527BB1F800093AD7C /* 51861538056_63d8c1f0d6_z.jpg in Resources */,
 				5561605627B6ABA800CF3F34 /* Assets.xcassets in Resources */,
+				5564F20027BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg in Resources */,
 				556A943F27BAE8570093AD7C /* 51851098944_7a65509216_z.jpg in Resources */,
+				5564F1FF27BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg in Resources */,
+				5564F20127BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg in Resources */,
+				5564F20227BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +361,7 @@
 				5564F1F027BBFE9000319DE7 /* TextFieldWithDebounce.swift in Sources */,
 				5561608427B6D63B00CF3F34 /* PhotosModel.swift in Sources */,
 				556A943D27B972790093AD7C /* NetworkServices.swift in Sources */,
+				5564F20427BC357700319DE7 /* ImageDataLoader.swift in Sources */,
 				5561608027B6B05500CF3F34 /* FlickrServiceHandler.swift in Sources */,
 				5561605427B6ABA500CF3F34 /* ContentView.swift in Sources */,
 				5561607C27B6AE3E00CF3F34 /* Flickr.swift in Sources */,
@@ -527,6 +543,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -556,6 +573,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
