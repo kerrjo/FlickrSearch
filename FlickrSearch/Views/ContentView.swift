@@ -8,10 +8,11 @@
 import SwiftUI
 import Combine
 
-// https://stackoverflow.com/questions/66164898/swiftui-combine-debounce-textfield/66165075
 
 /*
  an Observable that will update the secondary, debounced from the primary at intervals
+ 
+ https://stackoverflow.com/questions/66164898/swiftui-combine-debounce-textfield/66165075
  */
 class TextFieldObserver : ObservableObject {
     @Published var debouncedText = ""
@@ -130,9 +131,10 @@ struct ContentView: View {
                         .padding(gridSpacing)
                     }
                 }
-            } // navigation view
-            .navigationTitle("Flickr Photos")
-        }
+                .navigationTitle("Flickr Photos")
+            }
+        } // navigation view
+        .navigationViewStyle(.stack)
     }
     
     func searchTermChanged(to value: String) {
