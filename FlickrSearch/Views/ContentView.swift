@@ -99,8 +99,8 @@ struct ContentView: View {
     @StateObject var viewModel = PhotosModel()
     @StateObject var textObserver = TextFieldObserver()
     @State private var searchTerm = ""
-    @State private var gridSplit = 2
-    @State private var gridSpacing = 8.0
+    @State private var gridSplit = 3
+    @State private var gridSpacing = 4.0
     @State private var square = true
     
     private func gridItems(for width: CGFloat) -> [GridItem] {
@@ -131,8 +131,8 @@ struct ContentView: View {
                         .padding(gridSpacing)
                     }
                 }
-                .navigationTitle("Flickr Photos")
             }
+            .navigationTitle("Flickr Photos")
         } // navigation view
         .navigationViewStyle(.stack)
     }
