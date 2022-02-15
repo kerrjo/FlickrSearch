@@ -144,12 +144,6 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-
 extension Binding {
     func onChange(_ handler: @escaping (Value) -> Void) -> Binding<Value> {
         Binding(
@@ -159,5 +153,11 @@ extension Binding {
                 handler(newValue)
             }
         )
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }
