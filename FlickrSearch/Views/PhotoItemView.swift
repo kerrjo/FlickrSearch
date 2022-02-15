@@ -35,7 +35,6 @@ struct PhotoItemView : View {
                     .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
                     .padding(padding)
             }
-            
         }
     }
 }

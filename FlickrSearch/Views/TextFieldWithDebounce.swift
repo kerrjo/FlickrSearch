@@ -8,7 +8,6 @@
 import SwiftUI
 import Combine
 
-
 /*
  an Observable that will update the secondary, debounced from the primary at intervals
  https://stackoverflow.com/questions/66164898/swiftui-combine-debounce-textfield/66165075
@@ -35,12 +34,10 @@ class TextFieldObserver : ObservableObject {
 struct TextFieldWithDebounce : View {
     @Binding var debouncedText : String
     @StateObject private var textObserver = TextFieldObserver()
-    
-    
     var body: some View {
         VStack {
             if #available(iOS 15, *) {
-                TextField("Search Tags", text: $textObserver.searchText.onChange(textChanged))
+                TextField("Search Tags", text: $textObserver.searchText) //.onChange(textChanged))
                     .frame(height: 30)
                     .padding(.leading, 5)
                     .overlay(
@@ -50,7 +47,7 @@ struct TextFieldWithDebounce : View {
                     .padding(.horizontal, 20)
                     .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             } else {
-                TextField("Search Tags", text: $textObserver.searchText.onChange(textChanged))
+                TextField("Search Tags", text: $textObserver.searchText) //.onChange(textChanged))
                     .frame(height: 30)
                     .padding(.leading, 5)
                     .overlay(
