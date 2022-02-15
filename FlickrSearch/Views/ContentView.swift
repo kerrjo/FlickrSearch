@@ -38,7 +38,7 @@ struct TextFieldWithDebounce : View {
     
     var body: some View {
         VStack {
-            TextField("Search Tags", text: $textObserver.searchText)
+            TextField("Search Tags", text: $textObserver.searchText.onChange(textChanged))
                 .frame(height: 30)
                 .padding(.leading, 5)
                 .overlay(
@@ -121,7 +121,7 @@ struct ContentView: View {
                         ScrollView {
                             LazyVGrid(columns: gridItems(for: geom.size.width), spacing: gridSpacing) {
                                 ForEach(viewModel.photos, id: \.id) { item in
-                                    NavigationLink(destination: PhotoView(item: item, title: searchTerm, photoImage: PhotoItemImage(item.imageURLlarge))) {
+                                    NavigationLink(destination: PhotoView(item: item, title: searchTerm)) {
                                         PhotoItemView(item: item, square: $square, padding: (geom.size.width / Double(gridSplit)) / 2.2)
                                     }
                                 }

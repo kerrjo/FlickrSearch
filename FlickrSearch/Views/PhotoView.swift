@@ -7,11 +7,12 @@
 
 import SwiftUI
 import UIKit
+import Combine
 
 struct PhotoView: View {
     var item: PhotoItem
     var title: String
-    @ObservedObject var photoImage: PhotoItemImage
+    @State private var imageDimensionString: String = ""
     
     var body: some View {
         ZStack {
@@ -26,15 +27,17 @@ struct PhotoView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
-
-                    /*
-                     uncomment in init PhotoItemImage Task { await fetchImage(url) }
-                     */
                     
-                    PhotoImageView(image: $photoImage.image)
                     
-//                    PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
-
+                    // Image View UIImage
+                    
+                    ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
+                    
+                    
+                    // AsyncImageView
+                    
+                    // PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
+                    
                     Group {
                         Text(item.title)
                             .font(.title)
@@ -49,11 +52,13 @@ struct PhotoView: View {
                         Text("Published " + item.published)
                             .font(.caption)
                             .padding(.top, 8)
-
-                        if photoImage.imageDimensionString.isEmpty {
+                        
+                        Spacer()
+                        
+                        if imageDimensionString.isEmpty {
                             Spacer()
                         } else {
-                            Text(photoImage.imageDimensionString)
+                            Text(imageDimensionString)
                                 .font(.caption)
                                 .padding(8)
                         }
@@ -69,29 +74,7 @@ struct PhotoView: View {
 /*
  a View contains a Image loaded from url if available
  otherwise place holder photo
-  */
-struct PhotoImageView : View {
-    @Binding var image: UIImage?
-
-    var body: some View {
-        if let image = image {
-            Image(uiImage: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-        } else {
-            Image(systemName: "photo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundColor(Color.gray)
-                .padding(64)
-        }
-    }
-}
-
-/*
- a View contains a Image loaded from url if available
- otherwise place holder photo
-  */
+ */
 struct PhotoImageAsyncImageView : View {
     var imageURL: URL?
     var body: some View {
@@ -116,12 +99,16 @@ struct PhotoImageAsyncImageView : View {
     }
 }
 
+// 51861868789_8eb044c624_z ss
+// 51830987906_a3cf10f042_z po
+// 51861538056_63d8c1f0d6_z ss
+
 struct PhotoView_Previews: PreviewProvider {
     @State static var isBool = false
-    @State static var image: UIImage? = UIImage(named:  "51830987906_a3cf10f042_z")
-    static var currentBundle: Bundle = Bundle.main
-    static var test_media = Media(m: currentBundle.url(forResource: "51851098944_7a65509216_z", withExtension: "jpg")!.absoluteString)
-    static var imageURL: URL? = currentBundle.url(forResource: "51851098944_7a65509216_z", withExtension: "jpg")
+    //@State static var image: UIImage? = UIImage(named: "51830987906_a3cf10f042_z")
+    static var nameForImageURL: String = "51861538056_63d8c1f0d6_z"
+    static var test_media = Media(m: Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")!.absoluteString)
+    static var imageURL: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
     
     static var previews: some View {
         Group {
@@ -133,15 +120,11 @@ struct PhotoView_Previews: PreviewProvider {
                                author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
                     dateTakenString: "Feb 2, 2020 at 2:00 pm",
                     published: "3 days ago"),
-                title: "hello",
-                photoImage: PhotoItemImage(imageURL))
+                title: "hello")
                 .previewDisplayName("Detail View")
             
             PhotoImageAsyncImageView(imageURL: imageURL)
                 .previewDisplayName("Image AsyncView")
-            
-            PhotoImageView(image: $image)
-                .previewDisplayName("uiImage ImageView")
         }
         .preferredColorScheme(.dark)
     }

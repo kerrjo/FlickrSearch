@@ -17,21 +17,7 @@ protocol ImageSizes {
     var imageURLsquare: URL? { get }
 }
 
-class PhotoItemImage: ObservableObject {
-    @Published var imageDimensionString: String = ""
-    @Published var image: UIImage?
-    
-    init(_ url: URL? = nil) {
-        Task { await fetchImage(url) }
-    }
-    @available(iOS 15, *)
-    private func fetchImage(_ url: URL?) async {
-        if let url = url, let imageData = try? Data(contentsOf: url), let image = UIImage(data: imageData) {
-            imageDimensionString = "width \(Int(image.size.width)) X height \(Int(image.size.height))"
-            self.image = image
-        }
-    }
-}
+
 
 class PhotoItem: Identifiable {
     let id: UUID = UUID()
@@ -49,7 +35,6 @@ class PhotoItem: Identifiable {
     
     init(with item: Item, dateTakenString: String = "", published: String = "") {
         imageURL = URL(string: item.media.m)
-        print(item.media.m)
         title = item.title
         self.dateTakenString = dateTakenString
         self.published = published
@@ -74,7 +59,7 @@ extension PhotoItem: ImageSizes {
         new_url.deleteLastPathComponent()
         new_url.appendPathComponent(fname + toSizeType)
         new_url.appendPathExtension(ext)
-        print(new_url)
+        //print(new_url)
         return new_url
     }
 }
