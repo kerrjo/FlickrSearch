@@ -29,14 +29,13 @@ struct PhotoView: View {
                         .padding(.vertical, 10)
                     
                     
-                    // Image View UIImage
+                    // - Image View UIImage
                     
-                    ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
+                    // ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
                     
+                    // - AsyncImageView
                     
-                    // AsyncImageView
-                    
-                    // PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
+                    PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
                     
                     Group {
                         Text(item.title)
@@ -100,26 +99,21 @@ struct PhotoImageAsyncImageView : View {
 }
 
 // 51861868789_8eb044c624_z ss
-// 51830987906_a3cf10f042_z po
+// 51830987906_a3cf10f042_z po asset
 // 51861538056_63d8c1f0d6_z ss
+// 51851098944_7a65509216_z po
 
 struct PhotoView_Previews: PreviewProvider {
-    @State static var isBool = false
-    //@State static var image: UIImage? = UIImage(named: "51830987906_a3cf10f042_z")
-    static var nameForImageURL: String = "51861538056_63d8c1f0d6_z"
-    static var test_media = Media(m: Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")!.absoluteString)
+    static var nameForImageURL: String = "51851098944_7a65509216_z"
     static var imageURL: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
-    
     static var previews: some View {
         Group {
             PhotoView(
-                item: PhotoItem(
-                    with: Item(title: "Picture This", link: "",
-                               media: test_media,
-                               dateTaken: "Jan 18, 2000", itemDescription: "", published: "",
-                               author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
-                    dateTakenString: "Feb 2, 2020 at 2:00 pm",
-                    published: "3 days ago"),
+                item: PhotoItem(with: Item(title: "Picture This", link: "",
+                                           media: Media(m: imageURL!.absoluteString), dateTaken: "", itemDescription: "", published: "",
+                                           author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
+                                dateTakenString: "Feb 2, 2020 at 2:00 pm",
+                                published: "3 days ago"),
                 title: "hello")
                 .previewDisplayName("Detail View")
             

@@ -98,21 +98,20 @@ class ImageDataLoader: ObservableObject {
 
 struct ImageView_Previews: PreviewProvider {
     @State static var imageDimensionString: String = ""
-    @State static var image: UIImage? = UIImage(named: "51830987906_a3cf10f042_z")
     static var nameForImageURL: String = "51861538056_63d8c1f0d6_z"
-    static var test_media = Media(m: Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")!.absoluteString)
-    static var imageURL: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
-    static var imageURLBad: URL? = Bundle.main.url(forResource: "invalid", withExtension: "jpg")
+    static var imageURLValid: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
+    static var imageURLInvalid: URL? = Bundle.main.url(forResource: "invalid", withExtension: "jpg")
+    static var test_media = Media(m: imageURLValid!.absoluteString)
     
     static var previews: some View {
         Group {
-            ImageView(withURL: imageURL, imageDimensionString: $imageDimensionString)
+            ImageView(withURL: imageURLValid, imageDimensionString: $imageDimensionString)
                 .previewDisplayName("Valid url ImageView")
             
             ImageView(withURL: nil, imageDimensionString: $imageDimensionString)
                 .previewDisplayName("nil url ImageView")
             
-            ImageView(withURL: imageURLBad, imageDimensionString: $imageDimensionString)
+            ImageView(withURL: imageURLInvalid, imageDimensionString: $imageDimensionString)
                 .previewDisplayName("invalid url ImageView")
         }
         .preferredColorScheme(.dark)

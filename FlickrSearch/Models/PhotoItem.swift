@@ -17,8 +17,6 @@ protocol ImageSizes {
     var imageURLsquare: URL? { get }
 }
 
-
-
 class PhotoItem: Identifiable {
     let id: UUID = UUID()
     let imageURL: URL?
