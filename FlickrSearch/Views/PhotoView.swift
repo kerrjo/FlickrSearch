@@ -110,12 +110,8 @@ struct PhotoImageAsyncImageView : View {
     }
 }
 
-// 51830987906_a3cf10f042_z po asset
-// 51851098944_7a65509216_z po
-// Seashells
 // 51861868789_8eb044c624_m ss
 // 51861538056_63d8c1f0d6_m ss
-
 struct PhotoView_Previews: PreviewProvider {
     static var nameForImageURL: String = "51861868789_8eb044c624_m"
     static var imageURL: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")

@@ -28,7 +28,6 @@ class ImageDataLoader: ObservableObject {
     }
     
     func load() {
-        //print(#function, imageURL)
         if #available(iOS 15, *) {
             Task { await fetchImage() }
         } else {
