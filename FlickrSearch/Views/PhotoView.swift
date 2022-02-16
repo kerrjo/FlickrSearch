@@ -7,11 +7,13 @@
 
 import SwiftUI
 
+/*
+ Detail PhotoView
+ */
 struct PhotoView: View {
     var item: PhotoItem
     var title: String
     @State private var imageDimensionString: String = ""
-    
     var body: some View {
         ZStack {
             Color.black
@@ -26,16 +28,21 @@ struct PhotoView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                     
-                    if #available(iOS 15, *) {
-                        // [ Image View UIImage ] obtains width and height
-                        
-                        // ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
-                        
-                        // [ AsyncImageView ]
-
-                        PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
-                    } else {
-                        ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
+                    if let imageURL = item.imageURLlarge {
+                        if #available(iOS 15, *) {
+                            // [ Image View UIImage ] obtains width and height
+                            // ImageView(withURL: imageURL, imageDimensionString: $imageDimensionString)
+                            
+                            // [ AsyncImageView ]
+                            PhotoImageAsyncImageView(imageURL: imageURL)
+                        } else {
+                            ImageView(withURL: imageURL, imageDimensionString: $imageDimensionString)
+                        }
+                   } else {
+                        Image(systemName: "questionmark.square")
+                            .resizable()
+                            .scaledToFit()
+                            .aspectRatio(contentMode: .fit)
                     }
                     
                     Group {
@@ -103,7 +110,6 @@ struct PhotoImageAsyncImageView : View {
     }
 }
 
-
 // 51830987906_a3cf10f042_z po asset
 // 51851098944_7a65509216_z po
 // Seashells
@@ -114,7 +120,6 @@ struct PhotoView_Previews: PreviewProvider {
     static var nameForImageURL: String = "51861868789_8eb044c624_m"
     static var imageURL: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
     static var imageURLUnavailable: URL? = URL(string: "file://zzz_m.zzz")
-
     static var previews: some View {
         Group {
             PhotoView(

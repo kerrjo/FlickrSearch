@@ -19,41 +19,26 @@ class ImageDataLoader: ObservableObject {
         }
     }
     
-    private func failedAttempt() {
-        DispatchQueue.main.async {
-            self.didChange.send(Data())
-        }
-    }
-    
-    private var imageURL: URL?
+    private var imageURL: URL
     
     @available(iOS 15, *)
-    private func fetchImage(_ url: URL?) async {
-        if let url = url, let imageData = try? Data(contentsOf: url) {
-            print(#function, url)
-            Task { await MainActor.run { self.data = imageData } }
-        } else {
-            Task { await MainActor.run { self.didChange.send(Data()) } }
-        }
+    private func fetchImage() async {
+        let imageData = try? Data(contentsOf: imageURL)
+        Task { await MainActor.run { self.data = imageData ?? Data() } }
     }
     
     func load() {
-        if #available(iOS 15, *) { Task { await fetchImage(imageURL) } } else {
-            // not ios 15
-            guard let url = imageURL else { return self.failedAttempt() }
-            print(#function, url)
-            
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                guard let data = data else { return self.failedAttempt() }
-                DispatchQueue.main.async {
-                    self.data = data
+        print(#function, imageURL)
+        if #available(iOS 15, *) {
+            Task { await fetchImage() }
+        } else {
+            URLSession.shared.dataTask(with: imageURL) { data, response, error in
+                DispatchQueue.main.async { [weak self] in
+                    self?.data = data ?? Data()
                 }
             }.resume()
         }
     }
     
-    init(withURL url: URL?) {
-        imageURL = url
-    }
+    init(withURL url: URL) { imageURL = url }
 }
-
