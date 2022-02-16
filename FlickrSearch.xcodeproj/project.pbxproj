@@ -31,6 +31,8 @@
 		5564F20127BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1FB27BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg */; };
 		5564F20227BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F1FC27BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg */; };
 		5564F20427BC357700319DE7 /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5564F20327BC357700319DE7 /* ImageDataLoader.swift */; };
+		5564F20627BCAAF800319DE7 /* 51861868789_8eb044c624_b.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F20527BCAAF700319DE7 /* 51861868789_8eb044c624_b.jpg */; };
+		5564F20827BCAB0600319DE7 /* 51861538056_63d8c1f0d6_b.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5564F20727BCAB0600319DE7 /* 51861538056_63d8c1f0d6_b.jpg */; };
 		556A943727B7682F0093AD7C /* PhotoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943627B7682F0093AD7C /* PhotoItemTests.swift */; };
 		556A943927B851F00093AD7C /* PhotoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943827B851F00093AD7C /* PhotoItem.swift */; };
 		556A943B27B8B8D30093AD7C /* FlickrRestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556A943A27B8B8D30093AD7C /* FlickrRestService.swift */; };
@@ -84,6 +86,8 @@
 		5564F1FB27BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861868789_8eb044c624_q.jpg; sourceTree = "<group>"; };
 		5564F1FC27BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = 51861538056_63d8c1f0d6_z.jpg; path = ../../../../../Downloads/51861538056_63d8c1f0d6_z.jpg; sourceTree = "<group>"; };
 		5564F20327BC357700319DE7 /* ImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
+		5564F20527BCAAF700319DE7 /* 51861868789_8eb044c624_b.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861868789_8eb044c624_b.jpg; sourceTree = "<group>"; };
+		5564F20727BCAB0600319DE7 /* 51861538056_63d8c1f0d6_b.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 51861538056_63d8c1f0d6_b.jpg; sourceTree = "<group>"; };
 		556A943627B7682F0093AD7C /* PhotoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItemTests.swift; sourceTree = "<group>"; };
 		556A943827B851F00093AD7C /* PhotoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoItem.swift; sourceTree = "<group>"; };
 		556A943A27B8B8D30093AD7C /* FlickrRestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrRestService.swift; sourceTree = "<group>"; };
@@ -159,9 +163,11 @@
 				5564F1F927BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg */,
 				5564F1F827BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg */,
 				5564F1FC27BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg */,
+				5564F20727BCAB0600319DE7 /* 51861538056_63d8c1f0d6_b.jpg */,
 				5564F1FA27BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg */,
 				5564F1FB27BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg */,
 				5564F1F727BC33C500319DE7 /* 51861868789_8eb044c624_z.jpg */,
+				5564F20527BCAAF700319DE7 /* 51861868789_8eb044c624_b.jpg */,
 				556A943E27BAE8560093AD7C /* 51851098944_7a65509216_z.jpg */,
 			);
 			path = "Preview Content";
@@ -328,8 +334,10 @@
 				5564F1FE27BC33C500319DE7 /* 51861538056_63d8c1f0d6_q.jpg in Resources */,
 				5561605927B6ABA800CF3F34 /* Preview Assets.xcassets in Resources */,
 				5561605627B6ABA800CF3F34 /* Assets.xcassets in Resources */,
+				5564F20627BCAAF800319DE7 /* 51861868789_8eb044c624_b.jpg in Resources */,
 				5564F20027BC33C500319DE7 /* 51861868789_8eb044c624_m.jpg in Resources */,
 				556A943F27BAE8570093AD7C /* 51851098944_7a65509216_z.jpg in Resources */,
+				5564F20827BCAB0600319DE7 /* 51861538056_63d8c1f0d6_b.jpg in Resources */,
 				5564F1FF27BC33C500319DE7 /* 51861538056_63d8c1f0d6_m.jpg in Resources */,
 				5564F20127BC33C500319DE7 /* 51861868789_8eb044c624_q.jpg in Resources */,
 				5564F20227BC33C500319DE7 /* 51861538056_63d8c1f0d6_z.jpg in Resources */,

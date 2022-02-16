@@ -32,7 +32,7 @@ struct PhotoView: View {
                         // ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
                         
                         // [ AsyncImageView ]
-                        
+
                         PhotoImageAsyncImageView(imageURL: item.imageURLlarge)
                     } else {
                         ImageView(withURL: item.imageURLlarge, imageDimensionString: $imageDimensionString)
@@ -82,35 +82,39 @@ struct PhotoView: View {
 struct PhotoImageAsyncImageView : View {
     var imageURL: URL?
     var body: some View {
-        if let imageURL = imageURL {
-            AsyncImage(url: imageURL) { image in
+        AsyncImage(url: imageURL) { phase in
+            if let image = phase.image {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-            } placeholder: {
+            } else if phase.error != nil {
+                Image(systemName: "photo.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
+            } else {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .accentColor(Color.gray)
                     .scaleEffect(x: 2, y: 2, anchor: .center)
                     .padding([.leading, .trailing], 10)
             }
-        } else {
-            Image(systemName: "photo.fill")
-                .resizable()
-                .scaledToFit()
-                .aspectRatio(contentMode: .fit)
         }
     }
 }
 
-// 51861868789_8eb044c624_z ss
+
 // 51830987906_a3cf10f042_z po asset
-// 51861538056_63d8c1f0d6_z ss
 // 51851098944_7a65509216_z po
+// Seashells
+// 51861868789_8eb044c624_m ss
+// 51861538056_63d8c1f0d6_m ss
 
 struct PhotoView_Previews: PreviewProvider {
-    static var nameForImageURL: String = "51851098944_7a65509216_z"
+    static var nameForImageURL: String = "51861868789_8eb044c624_m"
     static var imageURL: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
+    static var imageURLUnavailable: URL? = URL(string: "file://zzz_m.zzz")
+
     static var previews: some View {
         Group {
             PhotoView(
@@ -120,8 +124,26 @@ struct PhotoView_Previews: PreviewProvider {
                                 dateTakenString: "Feb 2, 2020 at 2:00 pm",
                                 published: "3 days ago"),
                 title: "hello")
-                .previewDisplayName("Detail View")
+                .previewDisplayName("DetailView")
+
+            PhotoView(
+                item: PhotoItem(with: Item(title: "Picture This", link: "",
+                                           media: Media(m: imageURLUnavailable!.absoluteString), dateTaken: "", itemDescription: "", published: "",
+                                           author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
+                                dateTakenString: "Feb 2, 2020 at 2:00 pm",
+                                published: "3 days ago"),
+                title: "hello")
+                .previewDisplayName("unavail url DetailView")
             
+            PhotoView(
+                item: PhotoItem(with: Item(title: "Picture This", link: "",
+                                           media: Media(m: ""), dateTaken: "", itemDescription: "", published: "",
+                                           author: "nobody@flickr.com (\"joker\")", authorID: "", tags: ""),
+                                dateTakenString: "Feb 2, 2020 at 2:00 pm",
+                                published: "3 days ago"),
+                title: "hello")
+                .previewDisplayName("nil url DetailView")
+
             if #available(iOS 15, *) {
                 PhotoImageAsyncImageView(imageURL: imageURL)
                     .previewDisplayName("Image AsyncView")

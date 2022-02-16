@@ -8,16 +8,20 @@
 import UIKit
 import Combine
 
-
 /*
  Load data from url
  */
-
 class ImageDataLoader: ObservableObject {
     var didChange = PassthroughSubject<Data, Never>()
     var data = Data() {
         didSet {
             didChange.send(data)
+        }
+    }
+    
+    private func failedAttempt() {
+        DispatchQueue.main.async {
+            self.didChange.send(Data())
         }
     }
     
@@ -27,22 +31,20 @@ class ImageDataLoader: ObservableObject {
     private func fetchImage(_ url: URL?) async {
         if let url = url, let imageData = try? Data(contentsOf: url) {
             print(#function, url)
-            Task {
-                await MainActor.run(body: {
-                    self.data = imageData
-                })
-            }
+            Task { await MainActor.run { self.data = imageData } }
+        } else {
+            Task { await MainActor.run { self.didChange.send(Data()) } }
         }
     }
     
     func load() {
-        if #available(iOS 15, *) {
-            Task { await fetchImage(imageURL) }
-        } else {
-            guard let url = imageURL else { return }
+        if #available(iOS 15, *) { Task { await fetchImage(imageURL) } } else {
+            // not ios 15
+            guard let url = imageURL else { return self.failedAttempt() }
             print(#function, url)
+            
             URLSession.shared.dataTask(with: url) { data, response, error in
-                guard let data = data else { return }
+                guard let data = data else { return self.failedAttempt() }
                 DispatchQueue.main.async {
                     self.data = data
                 }

@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import UIKit
+
 
 /*
  a View contains a Image loaded from url if available otherwise place holder photo
@@ -27,13 +29,12 @@ struct PhotoItemView : View {
         } else {
             
             if let imageURL = imageURL {
-                PhotoItemImageView(withURL: imageURL)
+                PhotoItemImageView(withURL: imageURL, padding: padding)
             } else {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .accentColor(Color.white)
-                    .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
-                    .padding(padding)
+                Image(systemName: "questionmark.square")
+                    .resizable()
+                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
             }
         }
     }
@@ -48,19 +49,26 @@ struct PhotoItemImageAsyncImageView : View {
     var padding = 0.0
     var body: some View {
         if let imageURL = imageURL {
-            AsyncImage(url: imageURL) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } placeholder: {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .accentColor(Color.white)
-                    .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
-                    .padding(padding)
+            AsyncImage(url: imageURL) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } else if phase.error != nil {
+                    Image(systemName: "photo.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
+                } else {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .accentColor(Color.white)
+                        .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
+                        .padding(padding)
+                }
             }
         } else {
-            Image(systemName: "photo.fill")
+            Image(systemName: "questionmark.square")
                 .resizable()
                 .scaledToFit()
                 .aspectRatio(contentMode: .fit)
@@ -69,36 +77,53 @@ struct PhotoItemImageAsyncImageView : View {
 }
 
 /*
- a View loads an image and gets dimensions
+ a View loads an image as UIImage
  */
 struct PhotoItemImageView: View {
     @ObservedObject var imageDataLoader: ImageDataLoader
     @State private var image: UIImage? = nil
-    init(withURL url: URL?) {
+    @State private var didReceiveData: Bool = false
+    var padding: Double
+
+    init(withURL url: URL, padding: Double = 0.0) {
         imageDataLoader = ImageDataLoader(withURL: url)
+        self.padding = padding
     }
     
     var body: some View {
         Group {
             if let image = image {
+                /// image found loaded and set
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-            } else {
-                Image(systemName: "photo")
+            } else if didReceiveData {
+                /// image loaded not found
+                Image(systemName: "questionmark.square")
                     .resizable()
+                    .scaledToFit()
                     .aspectRatio(contentMode: .fit)
-                    .foregroundColor(Color.gray)
-                    .padding(64)
+            } else {
+                /// image loading
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .accentColor(Color.white)
+                    .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
+                    .padding(padding)
             }
         }
         .onAppear(perform: {
-            imageDataLoader.load()
+            if !didReceiveData {
+                imageDataLoader.load()
+            }
         })
         .onReceive(imageDataLoader.didChange) { data in
-            if image == nil {
-                self.image = UIImage(data: data) ?? UIImage()
+            if !didReceiveData {
+                self.image = UIImage(data: data)
+            } else {
+                // already received
             }
+            didReceiveData = true
         }
     }
 }
@@ -107,13 +132,14 @@ struct PhotoItemImageView: View {
 // 51861538056_63d8c1f0d6_m
 // 51861538056_63d8c1f0d6_q
 // 51861538056_63d8c1f0d6_z
+// 51861538056_63d8c1f0d6_b
 // https://live.staticflickr.com/65535/51861538056_63d8c1f0d6_z.jpg
 // https://live.staticflickr.com/65535/51861868789_8eb044c624_m.jpg
 
 struct PhotoItemView_Previews: PreviewProvider {
-    static var nameForImageURL: String = "51861538056_63d8c1f0d6_z"
+    static var nameForImageURL: String = "51861538056_63d8c1f0d6_m"
     static var imageURLValid: URL? = Bundle.main.url(forResource: nameForImageURL, withExtension: "jpg")
-    static var imageURLInvalid: URL? = Bundle.main.url(forResource: "invalid", withExtension: "jpg")
+    static var imageURLUnavailable: URL? = URL(string: "file://zzz_m.zzz")
     @State static var square: Bool = true
     
     static var previews: some View {
@@ -128,16 +154,26 @@ struct PhotoItemView_Previews: PreviewProvider {
                 padding: 10.0)
                 .previewDisplayName("PhotoItemView")
             
-            // TODO: broken
-            //            PhotoItemView(
-            //                item: PhotoItem(with: Item(title: "Picture This", link: "",
-            //                                           media: Media(m: imageURLInvalid!.absoluteString), dateTaken: "", itemDescription: "", published: "",
-            //                                           author: "", authorID: "", tags: ""),
-            //                                dateTakenString: "",
-            //                                published: ""),
-            //                square: $square,
-            //                padding: 10.0)
-            //                .previewDisplayName("invalid url PhotoItemView")
+            PhotoItemView(
+                item: PhotoItem(with: Item(title: "Picture This", link: "",
+                                           media: Media(m: imageURLUnavailable!.absoluteString), dateTaken: "", itemDescription: "", published: "",
+                                           author: "", authorID: "", tags: ""),
+                                dateTakenString: "",
+                                published: ""),
+                square: $square,
+                padding: 10.0)
+                .previewDisplayName("invalid url PhotoItemView")
+            
+            PhotoItemView(
+                item: PhotoItem(with: Item(title: "Picture This", link: "",
+                                           media: Media(m: ""), dateTaken: "", itemDescription: "", published: "",
+                                           author: "", authorID: "", tags: ""),
+                                dateTakenString: "",
+                                published: ""),
+                square: $square,
+                padding: 10.0)
+                .previewDisplayName("nil url PhotoItemView")
+
         }
     }
 }

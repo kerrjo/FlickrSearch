@@ -16,6 +16,7 @@ struct ImageView: View {
     @ObservedObject var imageDataLoader: ImageDataLoader
     @Binding var imageDimensionString: String
     @State private var image: UIImage? = nil
+    @State private var didReceiveData: Bool = false
     
     init(withURL url: URL?, imageDimensionString: Binding<String>) {
         imageDataLoader = ImageDataLoader(withURL: url)
@@ -25,30 +26,44 @@ struct ImageView: View {
     var body: some View {
         Group {
             if let image = image {
+                /// image found loaded and set
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-            } else {
-                Image(systemName: "photo")
+            } else if didReceiveData {
+                /// image loaded not found
+                Image(systemName: "questionmark.square")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundColor(Color.gray)
                     .padding(64)
+            } else {
+                /// image loading
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .accentColor(Color.white)
+                    .scaleEffect(x: 1.3, y: 1.3, anchor: .center)
+                    .padding(64)
             }
         }
         .onAppear(perform: {
-            imageDataLoader.load()
+            if !didReceiveData {
+                imageDataLoader.load()
+            }
         })
         .onReceive(imageDataLoader.didChange) { data in
-            if image == nil {
-                let image = UIImage(data: data) ?? UIImage()
-                self.image = image
-                imageDimensionString = "width \(Int(image.size.width)) X height \(Int(image.size.height))"
+            if !didReceiveData {
+                self.image = UIImage(data: data)
+                if let image = self.image {
+                    imageDimensionString = "width \(Int(image.size.width)) X height \(Int(image.size.height))"
+                }
+            } else {
+                // already received
             }
+            didReceiveData = true
         }
     }
 }
-
 
 
 struct ImageView_Previews: PreviewProvider {
