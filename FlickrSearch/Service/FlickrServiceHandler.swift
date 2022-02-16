@@ -54,7 +54,7 @@ class FlickrServiceHandler: FlickrWebService {
     }
 }
 
-
+// MARK: - Experimental
 // MARK: as Future publisher
 
 import Combine

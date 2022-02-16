@@ -6,31 +6,30 @@
 //
 
 import Foundation
-
+/*
+ view model for photos search reaults
+ */
 class PhotosModel: ObservableObject {
     @Published var photos: [PhotoItem] = []
     private let service: FlickrWebService?
     private let dateFormatter: PhotoDateFormatting?
-
-    @Published var title: [PhotoItem] = []
-
+    
     func fetch(using term: String) {
+        print(#function, term)
         if #available(iOS 15, *) {
             fetchAsync(using: term)
-//            fetchNormal(using: term)
+            //            fetchStandard(using: term)
         } else {
-            fetchNormal(using: term)
+            fetchStandard(using: term)
         }
     }
     
-    func fetchNormal(using term: String) {
+    private func fetchStandard(using term: String) {
         service?.fetchPhotos(searchTerm: term) { [weak self] in
             switch $0 {
             case .failure(let error):
                 print(error)
-                
             case .success(let response):
-                print(#function, response.title, "count", response.items.count)
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.photos = self.itemsFromResponse(response)
@@ -40,19 +39,14 @@ class PhotosModel: ObservableObject {
     }
     
     @available(iOS 15, *)
-    func fetchAsync(using term: String) {
+    private func fetchAsync(using term: String) {
         Task {
             let results = try await service?.fetchFlickrPhotos(searchTerm: term)
             switch results {
             case .failure(let error):
                 print(error)
-                
             case .success(let response):
-                print(#function, response.title, "count", response.items.count)
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.photos = self.itemsFromResponse(response)
-                }
+                Task { @MainActor in self.photos = self.itemsFromResponse(response) }
             case .none:
                 break
             }
@@ -68,11 +62,7 @@ class PhotosModel: ObservableObject {
     }
     
     init(_ service: FlickrWebService? = nil, dateFormatter: PhotoDateFormatting? = nil) {
-    
-//        self.service = service ?? FlickrServiceHandler()
-        
-        self.service = service ?? FlickrNetworkWebServiceHandler()
-
+        self.service = service ?? FlickrNetworkWebServiceHandler() // FlickrServiceHandler()
         self.dateFormatter = dateFormatter ?? PhotoDates()
     }
 }

@@ -25,7 +25,6 @@ protocol FlickrWebService {
     func fetchPhotos(searchTerm: String, completion: @escaping FlickrPhotosResultCompletion)
     func flickrServiceURL(searchTerm: String) -> URL?
     var itemsPerPage: Int { get }
-
     @available (iOS 15, *)
     func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult
 }
@@ -40,13 +39,6 @@ extension FlickrWebService {
         ]
         return components.url
     }
-    
-    // these params do not work
-    // per_page=40
-    // tagmode=any
-    //    URLQueryItem(name: "per_page", value: "\(itemsPerPage)"),
-    //    URLQueryItem(name: "tagmode", value: "any"),
-    
     
     var itemsPerPage: Int { 30 }
 }
@@ -66,4 +58,10 @@ extension FlickrWebService {
  static  ?format=json
  static  &nojsoncallback=1
  dynamic &tags=porcupine
- */
+ 
+ these params do not work
+ per_page=40
+ tagmode=any
+ URLQueryItem(name: "per_page", value: "\(itemsPerPage)"),
+ URLQueryItem(name: "tagmode", value: "any"),
+  */

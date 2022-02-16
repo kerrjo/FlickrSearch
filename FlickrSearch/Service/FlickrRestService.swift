@@ -14,39 +14,6 @@ import Combine
  https://developer.apple.com/documentation/foundation/urlsession/processing_url_session_data_task_results_with_combine
  */
 
-@available (iOS 15, *)
-private extension FlickrNetworkWebServiceHandler {
-
-    func fetchFlickrItems(_ url: URL) async throws -> FlickrPhotosResult {
-        print(#function, url)
-        let decoder = JSONDecoder()
-        let (data, _) = try await URLSession.shared.data(from: url)
-        let results = try decoder.decode(Flickr.self, from: data)
-        return .success(results)
-    }
-    
-    func fetchFlickrItemsErrorHandled(_ url: URL) async throws -> FlickrPhotosResult {
-        print(#function, url)
-        let (data, urlResponse): (Data, URLResponse)
-        do {
-            (data, urlResponse) = try await URLSession.shared.data(from: url)
-            guard let httpResponse = urlResponse as? HTTPURLResponse else { throw FetchError.badresponse }
-            guard 200...299 ~= httpResponse.statusCode else { throw FetchError.statusCode }
-        } catch {
-            throw FetchError.error(error)
-        }
-        
-        let decoder = JSONDecoder()
-        let results: FlickrResponse
-        do {
-            results = try decoder.decode(Flickr.self, from: data)
-        } catch {
-            throw FetchError.parse
-        }
-        return .success(results)
-    }
-}
-
 /**
  A cancelling FlickrWebService Class that submits a url request and srtores the task in dataTask to cancel later if needed
  combin request with  a FlickrWebService api with completion result
@@ -57,7 +24,6 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else {
             throw FetchError.malformedURL
         }
-        print(#function, url)
         let itemsFetchResult = try await fetchFlickrItems(url)
         return itemsFetchResult
     }
@@ -68,20 +34,25 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
     
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
         guard let url = flickrServiceURL(searchTerm: searchTerm) else { return completion(.failure(.malformedURL)) }
-        print(#function, url)
+        
+        // Fetch, one of three ways
         
         fetchWebService(url, completion: completion)
+        
         //        fetchWebServiceNetworkService(url, completion: completion)
+        
         //        fetchWebServiceDataNetworkService(url, completion: completion)
     }
     
     private var cancellable: AnyCancellable?
-    
-    // This class implements
-    
+    private let dataService = DataNetworkService()
+}
+
+// MARK: Experimental Different ways to fetch
+
+extension FlickrNetworkWebServiceHandler {
+    /// submits request and handles response, calls completion
     private func fetchWebService(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
-        print(#function, url)
-        
         cancellable = URLSession.shared
             .dataTaskPublisher(for: url)
             .tryMap() { element -> Data in
@@ -98,47 +69,45 @@ class FlickrNetworkWebServiceHandler: FlickrWebService {
                     completion(.failure(.error(error)))
                 case .finished: break
                 }
-                print ("Received completion: \($0).")
+                print (#function, "Received completion: \($0).")
             }, receiveValue: { response in
                 completion(.success(response))
             })
     }
     
-    // Uses general Network service
-    
+    /// submits request, uses general Network service, and handles response, calls completion
+    ///
+    /// Uses general  Network service
     private func fetchWebServiceNetworkService(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
-        //        cancellable = fetchUsinNetworkService(url)
-        cancellable = fetchUsinNetworkService_debug(url)
+        cancellable = fetchUsinNetworkService(url)
             .sink(receiveCompletion: {
                 switch $0 {
                 case .failure(let error):
                     completion(.failure(.error(error)))
                 case .finished: break
                 }
-                print ("Received completion: \($0).")
+                print (#function, "Received completion: \($0).")
             }, receiveValue: { response in
                 completion(.success(response))
             })
     }
     
-    // Uses general Data Network service
-    
+    /// submits request, using genereal Data Network service, and handles response, calls completion
+    ///
+    /// Uses general Data Network service
     private func fetchWebServiceDataNetworkService(_ url: URL, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
-        //        cancellable = fetchUsinDataNetworkService(url)
-        cancellable = fetchUsinDataNetworkService_debug(url)
+        cancellable = fetchUsinDataNetworkService(url)
             .sink(receiveCompletion: {
                 switch $0 {
                 case .failure(let error):
                     completion(.failure(.error(error)))
                 case .finished: break
                 }
-                print ("Received completion: \($0).")
+                print (#function, "Received completion: \($0).")
             }, receiveValue: { response in
                 completion(.success(response))
             })
     }
-    
-    private let dataService = DataNetworkService()
 }
 
 /// Data Network service usage
@@ -186,3 +155,33 @@ extension FlickrNetworkWebServiceHandler {
     }
 }
 
+// MARK: Experimental uses async approach
+
+@available (iOS 15, *)
+private extension FlickrNetworkWebServiceHandler {
+    
+    func fetchFlickrItems(_ url: URL) async throws -> FlickrPhotosResult {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let results = try JSONDecoder().decode(Flickr.self, from: data)
+        return .success(results)
+    }
+    
+    func fetchFlickrItemsErrorHandled(_ url: URL) async throws -> FlickrPhotosResult {
+        let (data, urlResponse): (Data, URLResponse)
+        do {
+            (data, urlResponse) = try await URLSession.shared.data(from: url)
+            guard let httpResponse = urlResponse as? HTTPURLResponse else { throw FetchError.badresponse }
+            guard 200...299 ~= httpResponse.statusCode else { throw FetchError.statusCode }
+        } catch {
+            throw FetchError.error(error)
+        }
+        
+        let results: FlickrResponse
+        do {
+            results = try JSONDecoder().decode(Flickr.self, from: data)
+        } catch {
+            throw FetchError.parse
+        }
+        return .success(results)
+    }
+}

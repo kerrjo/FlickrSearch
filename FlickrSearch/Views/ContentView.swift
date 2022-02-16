@@ -8,11 +8,11 @@
 import SwiftUI
 import Combine
 
-/*
+/**
  Primary content view
  presents the main Search and Search Results screen
  
- a View conatins a TextFiels that uses an observable
+ a View contains a TextField that uses an observable
  The text that is changed in thetext field is subscribed to insid ethe observable
  */
 struct ContentView: View {
@@ -22,14 +22,6 @@ struct ContentView: View {
     @State private var gridSplit = 3
     @State private var gridSpacing = 4.0
     @State private var square = true
-    
-    private func gridItems(for width: CGFloat) -> [GridItem] {
-        // interior bewteen items and outside = ( gridSplit + 1 )
-        let gridSplitWidth = width - gridSpacing * Double(gridSplit + 1)
-        let gridItemWidth = gridSplitWidth / Double(gridSplit)
-        return (1...gridSplit).map { _ in GridItem(.fixed(gridItemWidth), spacing: gridSpacing) }
-    }
-    
     var body: some View {
         NavigationView {
             GeometryReader { geom in
@@ -48,7 +40,9 @@ struct ContentView: View {
                             LazyVGrid(columns: gridItems(for: geom.size.width), spacing: gridSpacing) {
                                 ForEach(viewModel.photos, id: \.id) { item in
                                     NavigationLink(destination: PhotoView(item: item, title: searchTerm)) {
-                                        PhotoItemView(item: item, square: $square, padding: (geom.size.width / Double(gridSplit)) / 2.2)
+                                        PhotoItemView(item: item,
+                                                      square: $square,
+                                                      padding: (geom.size.width / Double(gridSplit)) / 2.2)
                                     }
                                 }
                             }
@@ -63,12 +57,16 @@ struct ContentView: View {
     }
     
     func searchTermChanged(to value: String) {
-        print(#function, value)
         guard value.count > 1 else { return }
         viewModel.fetch(using: value)
     }
+    
+    private func gridItems(for width: CGFloat) -> [GridItem] {
+        let gridSplitWidth = width - gridSpacing * Double(gridSplit + 1) // ( + 1) interior between items and outside
+        let gridItemWidth = gridSplitWidth / Double(gridSplit)
+        return (1...gridSplit).map { _ in GridItem(.fixed(gridItemWidth), spacing: gridSpacing) }
+    }
 }
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
