@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /**
  A cancelling FlickrWebService Class that submits a url request and srtores the task in dataTask to cancel later if needed
  
@@ -35,23 +34,41 @@ class FlickrServiceHandler: FlickrWebService {
             guard let httpResponse = response as? HTTPURLResponse else {
                 return completion(.failure(.badresponse))
             }
+            
             guard (200...299).contains(httpResponse.statusCode) else {
                 print("error statuscode", httpResponse.statusCode)
                 return completion(.failure(.statusCode))
             }
+            
             guard let jsonData = data else { return completion(.failure(.badresponseData)) }
                                                                
             let jsonDecoder = JSONDecoder()
             do {
                 let results = try jsonDecoder.decode(Flickr.self, from: jsonData)
                 completion(.success(results))
-
             } catch {
-                print(error)
-                return completion(.failure(.parse))
+                completion(.failure(.parse))
             }
-            
         }
         dataTask?.resume()
+    }
+}
+
+// MARK: - Experimental
+// MARK: as Future publisher
+
+import Combine
+
+/**
+ A FlickrWebService Class that uses Future
+ 
+ */
+extension FlickrServiceHandler {
+    func fetchPhotosPublisher(searchTerm: String) -> Future<Flickr, FetchError> {
+        return Future { [weak self] promise in
+            self?.fetchPhotos(searchTerm: searchTerm) {
+                promise($0)
+            }
+        }
     }
 }

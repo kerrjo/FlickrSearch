@@ -12,15 +12,15 @@ import Foundation
 protocol PhotoDateFormatting {
     var formatter: DateFormatter { get }
     var isoFormatter: ISO8601DateFormatter { get }
-    
+    var timeFormatter: RelativeDateTimeFormatter { get }
     
     func stringDateFromDateString(_ dateString: String) -> String
     func stringDateFromISODateString(_ dateString: String) -> String
     
     func relativeStringDateFromDateString(_ dateString: String) -> String
     func relativeStringDateFromISODateString(_ dateString: String) -> String
-    
 }
+
 extension PhotoDateFormatting {
     // normal
     
@@ -65,22 +65,26 @@ extension PhotoDateFormatting {
     
     private func stringForDate(_ date: Date) -> String {
         formatter.dateStyle = .medium
-        formatter.timeStyle = .medium
+        formatter.timeStyle = .short
         return formatter.string(from: date)
     }
     
     private func relativeStringForDate(_ date: Date) -> String {
         let timeFormatter = RelativeDateTimeFormatter()
+        timeFormatter.dateTimeStyle = .numeric
         guard let result = timeFormatter.string(for: date) else { return "" }
         return result
     }
 }
 
+/**
+ Date and Time formatting for photos
+ */
 
 class PhotoDates {
-    lazy var isoFormatter: ISO8601DateFormatter = ISO8601DateFormatter()
-    lazy var formatter: DateFormatter = DateFormatter()
-    lazy var timeFormatter: RelativeDateTimeFormatter = RelativeDateTimeFormatter()
+    private(set) lazy var isoFormatter: ISO8601DateFormatter = ISO8601DateFormatter()
+    private(set) lazy var formatter: DateFormatter = DateFormatter()
+    private(set) lazy var timeFormatter: RelativeDateTimeFormatter = RelativeDateTimeFormatter()
 }
 
 extension PhotoDates: PhotoDateFormatting { }

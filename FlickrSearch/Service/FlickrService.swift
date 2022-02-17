@@ -17,10 +17,16 @@ enum FetchError: Error {
     case notImplemented
 }
 
+typealias FlickrPhotosResult = Result<Flickr, FetchError>
+typealias FlickrPhotosResultCompletion = (FlickrPhotosResult) -> ()
+
 protocol FlickrWebService {
     func cancel()
-    func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ())
+    func fetchPhotos(searchTerm: String, completion: @escaping FlickrPhotosResultCompletion)
     func flickrServiceURL(searchTerm: String) -> URL?
+    var itemsPerPage: Int { get }
+    @available (iOS 15, *)
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult
 }
 
 extension FlickrWebService {
@@ -33,12 +39,19 @@ extension FlickrWebService {
         ]
         return components.url
     }
+    
+    var itemsPerPage: Int { 30 }
 }
 
+@available (iOS 15, *)
+extension FlickrWebService {
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult {
+        .failure(.notImplemented)
+    }
+}
 
 /**
  https://api.flickr.com/services/feeds/photos_public.gne?format=json&nojsoncallback=1&tags=porcupine
-
  URL to service
  https://api.flickr.com/services/feeds/photos_public.gne
  query params
@@ -46,5 +59,9 @@ extension FlickrWebService {
  static  &nojsoncallback=1
  dynamic &tags=porcupine
  
- */
-
+ these params do not work
+ per_page=40
+ tagmode=any
+ URLQueryItem(name: "per_page", value: "\(itemsPerPage)"),
+ URLQueryItem(name: "tagmode", value: "any"),
+  */

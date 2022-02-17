@@ -9,7 +9,7 @@ import XCTest
 import Combine
 @testable import FlickrSearch
 
-class TestPhotosModel: XCTestCase {
+class PhotosModelTests: XCTestCase {
     
     private var cancellables: Set<AnyCancellable>!
     
@@ -17,13 +17,10 @@ class TestPhotosModel: XCTestCase {
         super.setUp()
         cancellables = []
     }
-   // override func setUpWithError() throws { }
-
+    // override func setUpWithError() throws { }
+    
     override func tearDownWithError() throws { }
-
-    //    item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
-    //    item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
-
+    
     func testRelativeCalledForPublished() throws {
         
         let expectedDateString = "publisheddate"
@@ -33,18 +30,18 @@ class TestPhotosModel: XCTestCase {
                                          dateTaken: "datetakendate", itemDescription: "", published: expectedDateString,
                                          author: "", authorID: "", tags: "")
                                 ])
-                                
+        
         let expectationService = expectation(description: "")
         let mockService = MockFlickrWebService {
             expectationService.fulfill()
-            $0(.success(mockFlickr))
+            return .success(mockFlickr)
         }
         
         let mockDateHandler = MockDateFormatter(relativeStringDateFromDateStringHandler: {
             XCTAssertEqual($0, expectedDateString)
             return "called\($0)"
         })
-               
+        
         let sut = PhotosModel(mockService, dateFormatter: mockDateHandler)
         sut.fetch(using: "")
         waitForExpectations(timeout: 0.1, handler: nil)
@@ -59,26 +56,38 @@ class TestPhotosModel: XCTestCase {
                                          dateTaken: expectedDateString, itemDescription: "", published: "",
                                          author: "", authorID: "", tags: "")
                                 ])
-
+        
         let expectationDateHandler = expectation(description: "")
         let expectationService = expectation(description: "")
+        
         let mockService = MockFlickrWebService {
-            $0(.success(mockFlickr))
             expectationService.fulfill()
+            return .success(mockFlickr)
         }
-
+        
         let mockDateHandler = MockDateFormatter(stringDateFromISODateStringHandler: {
             XCTAssertEqual($0, expectedDateString)
             expectationDateHandler.fulfill()
             return "called\($0)"
         })
-     
+        
+        
         let sut = PhotosModel(mockService, dateFormatter: mockDateHandler)
+        
+        // wait for photos to be set
+        let expectationPhotos = expectation(description: "")
+        expectationPhotos.expectedFulfillmentCount = 2
+        sut.$photos
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { _ in
+                expectationPhotos.fulfill()
+            })
+            .store(in: &cancellables)
+        
         sut.fetch(using: "")
-        waitForExpectations(timeout: 0.1, handler: nil)
+        waitForExpectations(timeout: 0.2, handler: nil)
     }
     
-
     func testStringForDateTaken() throws {
         let expectedDateString = "datetaken"
         let mockFlickr = Flickr(title: "", link: "", flickrDescription: "", modified: "", generator: "",
@@ -86,21 +95,21 @@ class TestPhotosModel: XCTestCase {
                                             dateTaken: expectedDateString, itemDescription: "", published: "",
                                             author: "", authorID: "", tags: "")
                                       ])
-
+        
         let mockService = MockFlickrWebService {
-            $0(.success(mockFlickr))
+            .success(mockFlickr)
         }
-
+        
         let mockDateHandler = MockDateFormatter(stringDateFromISODateStringHandler: {
             XCTAssertEqual($0, expectedDateString)
             return "formatted\($0)"
         })
-     
+        
         let sut = PhotosModel(mockService, dateFormatter: mockDateHandler)
         let expectationPhotos = expectation(description: "")
         expectationPhotos.expectedFulfillmentCount = 2
         var photosResult = [PhotoItem]()
-
+        
         sut.$photos
             .sink { value in
                 print(value)
@@ -108,7 +117,7 @@ class TestPhotosModel: XCTestCase {
                 expectationPhotos.fulfill()
             }
             .store(in: &cancellables)
-
+        
         sut.fetch(using: "")
         waitForExpectations(timeout: 0.1, handler: nil)
         print(photosResult)
@@ -117,38 +126,58 @@ class TestPhotosModel: XCTestCase {
     }
 }
 
+/**
+ Mock Webservice
+ */
 class MockFlickrWebService: FlickrWebService {
     func cancel() { }
     
-    typealias FetchCompletion = (Result<Flickr, FetchError>) -> ()
-    typealias FetchCompletionHandler = (FetchCompletion) -> ()
-
+    typealias FetchedResultsHandler = () -> Result<Flickr, FetchError>
+    private var fetchedResultsHandler: FetchedResultsHandler?
+    
     func fetchPhotos(searchTerm: String, completion: @escaping (Result<Flickr, FetchError>) -> ()) {
-        fetchCompletionHandler?(completion)
+        completion(fetchedResultsHandler?() ?? .failure(.notImplemented))
     }
     
-    private var fetchCompletionHandler: FetchCompletionHandler?
-    init(_ fetchCompletion: FetchCompletionHandler? = nil) {
-        fetchCompletionHandler = fetchCompletion
+    func fetchFlickrPhotos(searchTerm: String) async throws -> FlickrPhotosResult {
+        return fetchedResultsHandler?() ?? .failure(.notImplemented)
+    }
+    
+    init(fetchedResultsHandler: FetchedResultsHandler? = nil) {
+        self.fetchedResultsHandler = fetchedResultsHandler
     }
 }
 
+//    typealias FetchCompletion = (Result<Flickr, FetchError>) -> ()
+//    typealias FetchCompletionHandler = (FetchCompletion) -> ()
+//    typealias FetchAsyncHandler = () -> Result<Flickr, FetchError>
+//    private var fetchCompletionHandler: FetchCompletionHandler?
+//    private var fetchAsyncHandler: FetchAsyncHandler?
+//        fetchAsyncHandler: FetchAsyncHandler? = nil, _ fetchCompletion: FetchCompletionHandler? = nil) {
+//        fetchCompletionHandler = fetchCompletion
+//        self.fetchAsyncHandler = fetchAsyncHandler
+
+/**
+ Mock DateFormatter
+ 
+ item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
+ 
+ item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
+ */
+
 class MockDateFormatter: PhotoDateFormatting {
-    lazy var formatter: DateFormatter = DateFormatter()
-    lazy var isoFormatter: ISO8601DateFormatter = ISO8601DateFormatter()
+    lazy var timeFormatter = RelativeDateTimeFormatter()
+    lazy var formatter = DateFormatter()
+    lazy var isoFormatter = ISO8601DateFormatter()
     
     typealias StringDateFromISODateStringHandler = (String) -> String
     typealias RelativeStringDateFromDateStringHandler = (String) -> String
-
-    //    item.dateTakenString = self?.dateFormatter?.stringDateFromISODateString($0.dateTaken) ?? ""
-
+    
     private var stringDateFromISODateStringHandler: StringDateFromISODateStringHandler?
-
-    //    item.published = self?.dateFormatter?.relativeStringDateFromDateString($0.published) ?? ""
-
+    
     private var relativeStringDateFromDateStringHandler: RelativeStringDateFromDateStringHandler?
-
-    // DATESTR
+    
+    // DATE STR
     
     func relativeStringDateFromDateString(_ dateString: String) -> String {
         relativeStringDateFromDateStringHandler?(dateString) ?? ""
